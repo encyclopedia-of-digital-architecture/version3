@@ -1,0 +1,426 @@
+{
+    "name": "DIGITAL ARCHITECTURE",
+    "children": [
+      {
+        "name": "ROBOTIC FABRICATION",
+        "children": [
+          {
+            "name": "HUMAN ROBOT COLLABORATION",
+            "children": [
+              {
+                "name": "Adaptive Industrial Robot Control for Designers",
+                "value": 1000,
+                "keywords": "HUMAN-ROBOT COLLABORATION, ROBOTIC FABRICATION, ADAPTIVE CONTROL, FEEDBACK",
+                "summary": "In this research, we present a system to allow designers to adaptively control an industrial robot from within a 3D modeling environment, for the purpose of real time feedback with respect to visual imagery of the object as well as robot pose during the fabrication process. Our work uses the Kuka industrial robots due to their capability in fabrication and programmability, and the Rhino 3D modeling software with the Grasshopper plugin which allows for visual programming for designers. A Microsoft Kinect sensor is used to provide visual feedback of the part during the fabrication process. We present the methodology used to develop the system, explaining various design and architecture choices made to allow for easy use of our system, while ensuring our system is open to further extension. We also show qualitative results of the fabrication process performed using our system in order to validate that our proposed system improves the interaction and collaboration between designer and robot when performing the task, in contrast to the iterative process that is generally followed.",
+                "children": [
+                  {
+                    "name": "Conceptual Knowledge",
+                    "value": 150
+                  },
+                  {
+                      "name": "Procedural Knowledge",
+                      "value": 150,
+                      "children": [
+                          {
+                              "id": 1,
+                              "templateId": "myShape",
+                              "x": -115.36664621359033,
+                              "y": 177.5,
+                              "fill": "#3f67d3",
+                              "text": "Adaptive Industrial Robot Control for Designers"
+                          },
+                          {
+                              "id": 2,
+                              "templateId": "myShape",
+                              "x": 225.02221489994707,
+                              "y": 177.5,
+                              "text": "3D Modeling & Robotic Fabrication"
+                          },
+                          {
+                              "id": 3,
+                              "templateId": "myShape",
+                              "x": 225.02221489994707,
+                              "y": 35.75743215495979,
+                              "text": "Real-time feedback and control"
+                          },
+                          {
+                              "id": 4,
+                              "templateId": "decision",
+                              "x": 618.0222148999471,
+                              "y": 177.5,
+                              "width": 350,
+                              "height": 350,
+                              "fill": "#FFCA28",
+                              "stroke": "#1E3A8A",
+                              "text": "Is it easy to use?"
+                          },
+                          {
+                              "id": 5,
+                              "templateId": "myShape",
+                              "x": 618.0222148999471,
+                              "y": 587.7162680151619,
+                              "text": "Yes, improved collaboration"
+                          },
+                          {
+                              "id": 6,
+                              "templateId": "myShape",
+                              "x": 1164.6888815666139,
+                              "y": 177.5,
+                              "text": "Human-robot collaboration"
+                          },
+                          {
+                              "id": 7,
+                              "templateId": "myShape",
+                              "x": 1164.6888815666139,
+                              "y": 37.57996232460269,
+                              "text": "Robot pose & feedback"
+                          },
+                          {
+                              "id": 8,
+                              "templateId": "myShape",
+                              "x": 1164.6888815666139,
+                              "y": -101.4056023570535,
+                              "text": "Kuka Robots & Rhino 3D"
+                          },
+                          {
+                              "id": 9,
+                              "templateId": "myShape",
+                              "x": 618.0222148999471,
+                              "y": 738.7671101458038,
+                              "text": "Collaborative robotic design"
+                          }
+                      ],
+                      "labels": [
+                          {
+                              "from": 4,
+                              "to": 5,
+                              "fromPort": "",
+                              "toPort": "",
+                              "position": 45.54307488626043,
+                              "content": "Yes",
+                              "templateId": "label",
+                              "x": 618.0222148999471,
+                              "y": 441.407491132308
+                          },
+                          {
+                              "from": 4,
+                              "to": 6,
+                              "fromPort": "",
+                              "toPort": "",
+                              "position": 48.014297197390945,
+                              "content": "No",
+                              "templateId": "label",
+                              "x": 906.6560516004391,
+                              "y": 177.5
+                          }
+                      ],
+                      "links": [
+                          {
+                              "from": 1,
+                              "to": 2,
+                              "templateId": "myLink"
+                          },
+                          {
+                              "from": 2,
+                              "to": 3,
+                              "templateId": "myLink"
+                          },
+                          {
+                              "from": 3,
+                              "to": 4,
+                              "templateId": "myLink"
+                          },
+                          {
+                              "from": 4,
+                              "to": 5,
+                              "templateId": "myLink"
+                          },
+                          {
+                              "from": 4,
+                              "to": 6,
+                              "templateId": "myLink"
+                          },
+                          {
+                              "from": 6,
+                              "to": 7,
+                              "templateId": "myLink"
+                          },
+                          {
+                              "from": 7,
+                              "to": 8,
+                              "templateId": "myLink"
+                          },
+                          {
+                              "from": 8,
+                              "to": 9,
+                              "templateId": "myLink"
+                          }
+                      ]                  
+                  },
+                  {
+                    "name": "Visual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Configurational Knowledge",
+                    "value": 150
+                  }
+                ]
+              },
+              {
+                "name": "[AR]OBOT: the AR-Assisted Robotic Fabrication System for Parametric Architectural Structures",
+                "value": 1000,
+                "keywords": "AUGMENTED REALITY, ROBOTIC FABRICATION, HUMAN-ROBOT COLLABORATION",
+                "summary": "[AR]OBOT tries to assist the robotic fabrication process for parametric architectural structures with Augmented Reality (AR) technology to explore new possibilities for easy architectural robotic operations. Due to the lack of computer programming skills and the disconnection between design and fabrication, architects are hampered in the robotic operation process. As part of our project, we create a visualization prototype in which robotic and on-site related information is being shown through AR devices overlapping on the physical world; followed by a robotic trajectory planning method in which designers’ gestures are being identified by AR as location nodes and calculated with the obstacle avoidance system; and an operation process in which robots are being controlled by human gestures and interactions with holographic simulation to enhance the robotic fabrication process efficiency and safety. In this paper, we share the preliminary results to demonstrate a new kind of AR-assisted workflow for the architects to perform the robotic fabrication of parametric architectural structures intuitively.",
+                "children": [
+                  {
+                    "name": "Conceptual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Procedural Knowledge",
+                    "value": 150,
+                    "children": [
+                        {
+                            "id": 10,
+                            "templateId": "myShape",
+                            "x": -115.36664621359033,
+                            "y": 177.5,
+                            "fill": "#FF5722",
+                            "text": "[AR]OBOT: AR-Assisted Robotic Fabrication"
+                        },
+                        {
+                            "id": 11,
+                            "templateId": "myShape",
+                            "x": 225.02221489994707,
+                            "y": 477.5,
+                            "text": "Augmented Reality (AR) for design"
+                        },
+                        {
+                            "id": 12,
+                            "templateId": "myShape",
+                            "x": 225.02221489994707,
+                            "y": 335.75743215495979,
+                            "text": "Gesture-controlled robot operations"
+                        },
+                        {
+                            "id": 13,
+                            "templateId": "decision",
+                            "x": 618.0222148999471,
+                            "y": 477.5,
+                            "width": 350,
+                            "height": 350,
+                            "fill": "#FFCA28",
+                            "stroke": "#1E3A8A",
+                            "text": "Can gestures control robot?"
+                        },
+                        {
+                            "id": 14,
+                            "templateId": "myShape",
+                            "x": 618.0222148999471,
+                            "y": 787.7162680151619,
+                            "text": "Yes, enhances collaboration"
+                        },
+                        {
+                            "id": 15,
+                            "templateId": "myShape",
+                            "x": 1164.6888815666139,
+                            "y": 477.5,
+                            "text": "Interactive AR interface"
+                        }
+                    ],
+                    "labels": [
+                        {
+                            "from": 13,
+                            "to": 14,
+                            "fromPort": "",
+                            "toPort": "",
+                            "position": 45.54307488626043,
+                            "content": "Yes",
+                            "templateId": "label",
+                            "x": 618.0222148999471,
+                            "y": 441.407491132308
+                        },
+                        {
+                            "from": 13,
+                            "to": 15,
+                            "fromPort": "",
+                            "toPort": "",
+                            "position": 48.014297197390945,
+                            "content": "No",
+                            "templateId": "label",
+                            "x": 906.6560516004391,
+                            "y": 477.5
+                        }
+                    ],
+                    "links": [
+                        {
+                            "from": 10,
+                            "to": 11,
+                            "templateId": "myLink"
+                        },
+                        {
+                            "from": 11,
+                            "to": 12,
+                            "templateId": "myLink"
+                        },
+                        {
+                            "from": 12,
+                            "to": 13,
+                            "templateId": "myLink"
+                        },
+                        {
+                            "from": 13,
+                            "to": 14,
+                            "templateId": "myLink"
+                        },
+                        {
+                            "from": 13,
+                            "to": 15,
+                            "templateId": "myLink"
+                        }
+                    ]
+                }
+                ,
+                  {
+                    "name": "Visual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Configurational Knowledge",
+                    "value": 150
+                  }
+                ]
+              },
+              {
+                "name": "Collaborative Robotic Masonry and Early Stage Fatigue Prediction",
+                "value": 1000,
+                "keywords": "INTERACTIVE ROBOTIC FABRICATION, HUMAN ROBOT COLLABORATION, FATIGUE AND POSE ESTIMATION, MASONRY",
+                "summary": "The nature of craft has often been dictated by the type and nature of the tool. The authors intend to establish a new relationship between a mechanically articulated tool and a human through the development a symbiotic relationship between them. This study attempts to develop and deploy a framework for collaborative robotic masonry involving one mason and one industrial robotic arm. This study aims to study the harmful posture and muscular stress developed during the construction work and involve a robotic arm to aid the mason to reduce the cumulative damage to one's body. Through utilization of RGBD sensors and surface electromyography procedure the study develops a framework that distributes the task between the mason and robot. The kinematics and electromyography detects the fatigue and harmful postures and activates the robot to collaborate with the mason in the process.",
+                "children": [
+                  {
+                    "name": "Conceptual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Procedural Knowledge",
+                    "value": 150,
+                    "children": [
+                        {
+                            "id": 16,
+                            "templateId": "myShape",
+                            "x": -115.36664621359033,
+                            "y": 777.5,
+                            "fill": "#4CAF50",
+                            "text": "Collaborative Robotic Masonry"
+                        },
+                        {
+                            "id": 17,
+                            "templateId": "myShape",
+                            "x": 225.02221489994707,
+                            "y": 777.5,
+                            "text": "Mason-robot collaboration"
+                        },
+                        {
+                            "id": 18,
+                            "templateId": "myShape",
+                            "x": 225.02221489994707,
+                            "y": 635.75743215495979,
+                            "text": "Fatigue detection & reduction"
+                        },
+                        {
+                            "id": 19,
+                            "templateId": "decision",
+                            "x": 618.0222148999471,
+                            "y": 777.5,
+                            "width": 350,
+                            "height": 350,
+                            "fill": "#FFCA28",
+                            "stroke": "#1E3A8A",
+                            "text": "Does robot assist in masonry?"
+                        },
+                        {
+                            "id": 20,
+                            "templateId": "myShape",
+                            "x": 618.0222148999471,
+                            "y": 1077.7162680151619,
+                            "text": "Yes, reduces physical strain"
+                        },
+                        {
+                            "id": 21,
+                            "templateId": "myShape",
+                            "x": 1164.6888815666139,
+                            "y": 777.5,
+                            "text": "Electromyography & sensors"
+                        }
+                    ],
+                    "labels": [
+                        {
+                            "from": 19,
+                            "to": 20,
+                            "fromPort": "",
+                            "toPort": "",
+                            "position": 45.54307488626043,
+                            "content": "Yes",
+                            "templateId": "label",
+                            "x": 618.0222148999471,
+                            "y": 441.407491132308
+                        },
+                        {
+                            "from": 19,
+                            "to": 21,
+                            "fromPort": "",
+                            "toPort": "",
+                            "position": 48.014297197390945,
+                            "content": "No",
+                            "templateId": "label",
+                            "x": 906.6560516004391,
+                            "y": 777.5
+                        }
+                    ],
+                    "links": [
+                        {
+                            "from": 16,
+                            "to": 17,
+                            "templateId": "myLink"
+                        },
+                        {
+                            "from": 17,
+                            "to": 18,
+                            "templateId": "myLink"
+                        },
+                        {
+                            "from": 18,
+                            "to": 19,
+                            "templateId": "myLink"
+                        },
+                        {
+                            "from": 19,
+                            "to": 20,
+                            "templateId": "myLink"
+                        },
+                        {
+                            "from": 19,
+                            "to": 21,
+                            "templateId": "myLink"
+                        }
+                    ]
+                }
+                ,
+                  {
+                    "name": "Visual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Configurational Knowledge",
+                    "value": 150
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowChart</title>
+    <!-- FlowChart.js Kütüphanesinin Yüklenmesi -->
+    <script src="https://balkan.app/js/FlowChart.js"></script>
+    <style>
+        /* CSS */
+        html,
+        body {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        #chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Akış diyagramındaki metin stilini siyah yapma */
+        [data-shape-field] {
+            color: #000000 !important; /* Siyah yazı */
+            font-size: 28px;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        /* Kutu stilleri için mavi tonları */
+        .myProcess {
+            fill: #3f67d3; /* Açık mavi */
+            stroke: #1E3A8A; /* Koyu mavi border */
+        }
+
+        .myLink {
+            stroke: #1E3A8A; /* Koyu mavi border */
+        }
+
+        .decision {
+            fill: #3f67d3; /* Açık mavi */
+            stroke: #1E3A8A; /* Koyu mavi border */
+        }
+
+        /* Final kutusunun rengi daha koyu yapılacak */
+        .finalProcess {
+            fill: #3f67d3; /* Açık mavi */
+            stroke: #1E3A8A; /* Koyu mavi border */
+        }
+
+        /* Döngü kutusunun rengi daha koyu olacak */
+        .loopProcess {
+            fill: #3f67d3; /* Açık mavi */
+            stroke: #1E3A8A; /* Koyu mavi border */
+        }
+    </style>
+</head>
+<body>
+    <!-- Akış diyagramının render edileceği alan -->
+    <div id="chart"></div>
+
+    <script>
+        // FlowChart.js Yapılandırması
+        FlowChart.shapeTemplates.process.displayInPortShapeBar = false;
+        FlowChart.shapeTemplates.inOut.displayInPortShapeBar = false;
+        FlowChart.shapeTemplates.startEnd.displayInPortShapeBar = false;
+
+        FlowChart.shapeTemplates.myShape = class extends FlowChart.shapeTemplates.process {};
+        FlowChart.shapeTemplates.myShape.displayName = 'My Process';
+        FlowChart.shapeTemplates.myShape.fill = '#3f67d3'; /* Açık mavi */
+        FlowChart.shapeTemplates.myShape.stroke = '#1E3A8A'; /* Koyu mavi border */
+        FlowChart.shapeTemplates.myShape.property = 'My Process';
+        FlowChart.shapeTemplates.myShape.minWidth = 270;
+        FlowChart.shapeTemplates.myShape.minHeight = 70;
+        FlowChart.shapeTemplates.myShape.displayInPortShapeBar = true;
+
+        FlowChart.linkTemplates.myLink = class extends FlowChart.linkTemplates.rounded {};
+        FlowChart.linkTemplates.myLink.stroke = '#1E3A8A'; /* Koyu mavi border */
+
+        // Akış diyagramındaki metinleri siyah yapmak için JavaScript
+        let chart = new FlowChart('#chart', {
+            scaleMin: 0.1,
+            startPosition: FlowChart.startPosition.fit
+        });
+
+        chart.onChanged(function () {
+            // Akış diyagramı her değiştiğinde metinleri siyah yapalım
+            const textFields = document.querySelectorAll('[data-shape-field]');
+            textFields.forEach(function (field) {
+                field.style.color = '#000000';  // Siyah renk
+            });
+        });
+
+        chart.load({
+            "nodes": [
+                {
+                    "id": 1,
+                    "templateId": "myShape",
+                    "x": -115.36664621359033,
+                    "y": 177.5,
+                    fill: '#3f67d3', /* Açık mavi */
+                    "text": "Digital Output in Architecture"
+                },
+                {
+                    "templateId": "myShape",
+                    "text": "3D Modeling to 3D Output",
+                    "id": "_4pds",
+                    "x": 225.02221489994707,
+                    "y": 177.5
+                },
+                {
+                    "templateId": "myShape",
+                    "text": "Challenges Traditional Representation?",
+                    "id": "_n5zv",
+                    "x": 225.02221489994707,
+                    "y": 35.75743215495979
+                },
+                {
+                    "templateId": "myShape",
+                    "text": "Test Need for Plans, Sections, etc.",
+                    "id": "_grj8",
+                    "x": 225.02221489994707,
+                    "y": 316.1025136843034
+                },
+                {
+                    "templateId": "decision",
+                    "text": "Test Conversion to Code",
+                    "id": "_tjcx",
+                    "width": 350,
+                    "height": 350,
+                    fill: '#3f67d3', /* Açık mavi */
+                    stroke: '#1E3A8A', /* Koyu mavi border */
+                    "x": 618.0222148999471,
+                    "y": 177.5
+                },
+                {
+                    "templateId": "myShape",
+                    "text": "Implications for Design Process and Production",
+                    "id": "_ov1j",
+                    fill: '#3f67d3', /* Açık mavi */
+                    "x": 618.0222148999471,
+                    "y": 587.7162680151619
+                },
+                {
+                    "templateId": "myShape",
+                    "text": "Scrutinize Issues in Design Process",
+                    fill: '#3f67d3', /* Açık mavi */
+                    "id": "_ujqf",
+                    "x": 1164.6888815666139,
+                    "y": 177.5
+                },
+                {
+                    "templateId": "myShape",
+                    "text": "Use Computer for 3D Visualization and Fabrication",
+                    fill: '#3f67d3', /* Açık mavi */
+                    "id": "_8jm0",
+                    "x": 1164.6888815666139,
+                    "y": 37.57996232460269
+                },
+                {
+                    "templateId": "myShape",
+                    "text": "Examine Historic Architectural Forms",
+                    fill: '#3f67d3', /* Açık mavi */
+                    "id": "_cwiu",
+                    "x": 1164.6888815666139,
+                    "y": -101.4056023570535
+                },
+                {
+                    "templateId": "myShape",
+                    "text": "Foundation for New Fabrication Techniques",
+                    fill: '#3f67d3', /* Açık mavi */
+                    "id": "_5te6",
+                    "x": 618.0222148999471,
+                    "y": 738.7671101458038
+                },
+                {
+                    "templateId": "myShape",
+                    "text": "Structural Concerns for Expressive Forms",
+                    "id": "_8e06",
+                    fill: '#3f67d3', /* Açık mavi */
+                    "x": 1018.0222148999472,
+                    "y": 738.7671101458038
+                }
+            ],
+            "labels": [
+                {
+                    "from": "_tjcx",
+                    "to": "_ov1j",
+                    "fromPort": "",
+                    "toPort": "",
+                    "position": 45.54307488626043,
+                    "content": 45.54307488626043,
+                    "templateId": "label",
+                    "y": 441.407491132308,
+                    "x": 618.0222148999471,
+                    "text": "Yes"
+                },
+                {
+                    "from": "_tjcx",
+                    "to": "_ujqf",
+                    "fromPort": "",
+                    "toPort": "",
+                    "position": 48.014297197390945,
+                    "content": 48.014297197390945,
+                    "templateId": "label",
+                    "x": 906.6560516004391,
+                    "y": 177.5,
+                    "text": "No"
+                }
+            ],
+            "links": [
+                {
+                    "from": 1,
+                    "to": "_4pds",
+                    "templateId": "myLink"
+                },
+                {
+                    "from": "_n5zv",
+                    "to": "_4pds",
+                    "templateId": "myLink"
+                },
+                {
+                    "from": "_grj8",
+                    "to": "_4pds",
+                    "templateId": "myLink"
+                },
+                {
+                    "from": "_4pds",
+                    "to": "_tjcx",
+                    "templateId": "myLink"
+                },
+                {
+                    "from": "_tjcx",
+                    "to": "_ov1j",
+                    "templateId": "myLink"
+                },
+                {
+                    "from": "_tjcx",
+                    "to": "_ujqf",
+                    "templateId": "myLink"
+                },
+                {
+                    "from": "_ujqf",
+                    "to": "_8jm0",
+                    "templateId": "myLink"
+                },
+                {
+                    "from": "_8jm0",
+                    "to": "_cwiu",
+                    "templateId": "myLink"
+                },
+                {
+                    "from": "_cwiu",
+                    "fromPort": "left",
+                    "to": "_tjcx",
+                    "toPort": "top",
+                    "templateId": "myLink"
+                },
+                {
+                    "from": "_ov1j",
+                    "to": "_5te6",
+                    "templateId": "myLink"
+                },
+                {
+                    "from": "_5te6",
+                    "to": "_8e06",
+                    "templateId": "myLink"
+                }
+            ]
+        });
+    </script>
+</body>
+</html>

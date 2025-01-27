@@ -1,0 +1,88 @@
+{
+    "name": "DIGITAL ARCHITECTURE",
+    "children": [
+      {
+        "name": "ROBOTIC FABRICATION",
+        "children": [
+          {
+            "name": "HUMAN ROBOT COLLABORATION",
+            "children": [
+              {
+                "name": "Adaptive Industrial Robot Control for Designers",
+                "value": 1000,
+                "keywords": "HUMAN-ROBOT COLLABORATION, ROBOTIC FABRICATION, ADAPTIVE CONTROL, FEEDBACK",
+                "summary": "In this research, we present a system to allow designers to adaptively control an industrial robot from within a 3D modeling environment, for the purpose of real time feedback with respect to visual imagery of the object as well as robot pose during the fabrication process. Our work uses the Kuka industrial robots due to their capability in fabrication and programmability, and the Rhino 3D modeling software with the Grasshopper plugin which allows for visual programming for designers. A Microsoft Kinect sensor is used to provide visual feedback of the part during the fabrication process. We present the methodology used to develop the system, explaining various design and architecture choices made to allow for easy use of our system, while ensuring our system is open to further extension. We also show qualitative results of the fabrication process performed using our system in order to validate that our proposed system improves the interaction and collaboration between designer and robot when performing the task, in contrast to the iterative process that is generally followed.",
+                "children": [
+                  {
+                    "name": "Conceptual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Procedural Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Visual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Configurational Knowledge",
+                    "value": 150
+                  }
+                ]
+              },
+              {
+                "name": "[AR]OBOT: the AR-Assisted Robotic Fabrication System for Parametric Architectural Structures",
+                "value": 1000,
+                "keywords": "AUGMENTED REALITY, ROBOTIC FABRICATION, HUMAN-ROBOT COLLABORATION",
+                "summary": "[AR]OBOT tries to assist the robotic fabrication process for parametric architectural structures with Augmented Reality (AR) technology to explore new possibilities for easy architectural robotic operations. Due to the lack of computer programming skills and the disconnection between design and fabrication, architects are hampered in the robotic operation process. As part of our project, we create a visualization prototype in which robotic and on-site related information is being shown through AR devices overlapping on the physical world; followed by a robotic trajectory planning method in which designers’ gestures are being identified by AR as location nodes and calculated with the obstacle avoidance system; and an operation process in which robots are being controlled by human gestures and interactions with holographic simulation to enhance the robotic fabrication process efficiency and safety. In this paper, we share the preliminary results to demonstrate a new kind of AR-assisted workflow for the architects to perform the robotic fabrication of parametric architectural structures intuitively.",
+                "children": [
+                  {
+                    "name": "Conceptual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Procedural Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Visual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Configurational Knowledge",
+                    "value": 150
+                  }
+                ]
+              },
+              {
+                "name": "Collaborative Robotic Masonry and Early Stage Fatigue Prediction",
+                "value": 1000,
+                "keywords": "INTERACTIVE ROBOTIC FABRICATION, HUMAN ROBOT COLLABORATION, FATIGUE AND POSE ESTIMATION, MASONRY",
+                "summary": "The nature of craft has often been dictated by the type and nature of the tool. The authors intend to establish a new relationship between a mechanically articulated tool and a human through the development a symbiotic relationship between them. This study attempts to develop and deploy a framework for collaborative robotic masonry involving one mason and one industrial robotic arm. This study aims to study the harmful posture and muscular stress developed during the construction work and involve a robotic arm to aid the mason to reduce the cumulative damage to one's body. Through utilization of RGBD sensors and surface electromyography procedure the study develops a framework that distributes the task between the mason and robot. The kinematics and electromyography detects the fatigue and harmful postures and activates the robot to collaborate with the mason in the process.",
+                "children": [
+                  {
+                    "name": "Conceptual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Procedural Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Visual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Configurational Knowledge",
+                    "value": 150
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  

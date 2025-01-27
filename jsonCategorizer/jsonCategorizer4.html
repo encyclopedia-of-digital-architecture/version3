@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makale Kümeleri</title>
+    <style>
+        /* styles.css */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input[type="file"] {
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        .category {
+            margin-bottom: 15px;
+        }
+
+        .category strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .category ul {
+            padding-left: 20px;
+        }
+
+        .category li {
+            list-style-type: disc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Makale Kümeleri</h1>
+        <input type="file" id="jsonFile" accept=".json">
+        <button onclick="processData()">Veriyi İşle</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Ana kümeleri oluşturmak için kullanılan nesne
+        const categories = {};
+
+        // JSON dosyasını okuma ve işleme fonksiyonu
+        function processData() {
+            const fileInput = document.getElementById("jsonFile");
+
+            if (fileInput.files.length === 0) {
+                alert("Lütfen bir JSON dosyası seçin.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                try {
+                    // JSON verisini çözümleme
+                    const data = JSON.parse(event.target.result);
+
+                    if (!Array.isArray(data)) {
+                        alert("Geçersiz format! JSON dosyası bir dizi olmalıdır.");
+                        return;
+                    }
+
+                    // Tüm makaleler üzerinde işlemi gerçekleştirme
+                    data.forEach(item => {
+                        const keywords = item.Keywords.split(",").map(keyword => keyword.trim().toUpperCase());
+
+                        // Kategorileri türet
+                        keywords.forEach(keyword => {
+                            if (!categories[keyword]) {
+                                categories[keyword] = [];  // Eğer kategori yoksa, yeni oluştur
+                            }
+                            categories[keyword].push(item.Title);  // Makaleyi bu kategoriye ekle
+                        });
+
+                        // 'Others' kategorisini oluştur
+                        if (!categories["Others"]) {
+                            categories["Others"] = [];
+                        }
+                        categories["Others"].push(item.Title);
+                    });
+
+                    // Sonuçları ekrana yazdır
+                    displayResult();
+
+                } catch (e) {
+                    alert("Geçersiz JSON dosyası. Lütfen geçerli bir JSON dosyası yükleyin.");
+                }
+            };
+
+            reader.readAsText(file); // Dosyayı metin olarak oku
+        }
+
+        // Sonuçları sayfada görüntüleme fonksiyonu
+        function displayResult() {
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "";  // Önceki sonuçları temizle
+
+            // Kategorilere göre listeyi oluştur
+            Object.keys(categories).forEach(category => {
+                const categoryDiv = document.createElement("div");
+                categoryDiv.classList.add("category");
+                categoryDiv.innerHTML = `<strong>${category}</strong><ul>`;
+
+                categories[category].forEach(title => {
+                    categoryDiv.innerHTML += `<li>${title}</li>`;
+                });
+
+                categoryDiv.innerHTML += `</ul>`;
+                resultDiv.appendChild(categoryDiv);
+            });
+        }
+    </script>
+</body>
+</html>

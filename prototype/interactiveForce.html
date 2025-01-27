@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GoJS Interactive Diagram</title>
+  <script src="https://cdn.jsdelivr.net/npm/gojs@3.0.16/release/go.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 20px;
+    }
+    #myDiagramDiv {
+      background-color: whitesmoke;
+      border: solid 1px black;
+      width: 40%;
+      height: 600px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>GoJS Interactive Diagram</h1>
+  <p>
+    This diagram demonstrates a force-directed layout. Drag nodes to see the
+    custom layout in action.
+  </p>
+  <div id="myDiagramDiv"></div>
+
+  <script>
+    // Custom continuous force-directed layout
+    class ContinuousForceDirectedLayout extends go.ForceDirectedLayout {
+      constructor(init) {
+        super();
+        if (init) Object.assign(this, init);
+      }
+
+      isFixed(v) {
+        return v.node.isSelected;
+      }
+
+      doLayout(coll) {
+        if (!this._isObserving) {
+          this._isObserving = true;
+          this.diagram.addModelChangedListener((e) => {
+            if (e.modelChange !== '' || e.propertyName === 'StartingFirstTransaction') {
+              this.network = null;
+            }
+          });
+        }
+        var net = this.network;
+        if (net === null) {
+          this.network = net = this.makeNetwork(coll);
+        } else {
+          this.diagram.nodes.each((n) => {
+            var v = net.findVertex(n);
+            if (v !== null) v.bounds = n.actualBounds;
+          });
+        }
+        super.doLayout(coll);
+        this.network = net;
+      }
+    }
+
+    function init() {
+      const $ = go.GraphObject.make;
+
+      const myDiagram = $(go.Diagram, 'myDiagramDiv', {
+        initialAutoScale: go.AutoScale.Uniform,
+        contentAlignment: go.Spot.Center,
+        layout: new ContinuousForceDirectedLayout({
+          defaultSpringLength: 150
+        }),
+        SelectionMoved: (e) => e.diagram.layout.invalidateLayout()
+      });
+
+      // Node template
+      myDiagram.nodeTemplate = $(
+        go.Node,
+        'Auto',
+        $(go.Shape, 'Circle', { fill: 'CornflowerBlue', stroke: 'black' }),
+        $(go.TextBlock, { font: 'bold 10pt helvetica, arial', textAlign: 'center', margin: 5 },
+          new go.Binding('text'))
+      );
+
+      // Link template
+      myDiagram.linkTemplate = $(
+        go.Link,
+        $(go.Shape, { stroke: 'black' }),
+        $(go.Shape, { toArrow: 'Standard', stroke: null }),
+        $(go.Panel, 'Auto',
+          $(go.Shape, { fill: 'rgba(240, 240, 240, 0.5)', stroke: null }),
+          $(go.TextBlock, { margin: 4, font: '10pt sans-serif' },
+            new go.Binding('text'))
+        )
+      );
+
+      // Diagram data
+      myDiagram.model = new go.GraphLinksModel(
+        [
+          { key: 1, text: 'Digital Output from Computer Modeling' },
+          { key: 2, text: 'Visualization and Fabrication of Architecture' },
+          { key: 3, text: 'Three-Dimensional Modeling' },
+          { key: 4, text: 'Real Three-Dimensional Output' },
+          { key: 5, text: 'Traditional Representation' },
+          { key: 6, text: 'Architectural Intentions' },
+          { key: 7, text: 'Conversion to Code' },
+          { key: 8, text: 'New Potentials in Fabrication' },
+          { key: 9, text: 'Implications for Architectural Design Process' },
+          { key: 10, text: 'Methods for Making Digital Architecture' }
+        ],
+        [
+          { from: 1, to: 2, text: 'represents' },
+          { from: 2, to: 3, text: 'is based on' },
+          { from: 3, to: 4, text: 'leads to' },
+          { from: 5, to: 6, text: 'includes' },
+          { from: 6, to: 7, text: 'requires' },
+          { from: 7, to: 8, text: 'introduces' },
+          { from: 8, to: 9, text: 'challenges' },
+          { from: 9, to: 10, text: 'develops' },
+          { from: 3, to: 10, text: 'guides' },
+          { from: 6, to: 9, text: 'influences' }
+        ]
+      );
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

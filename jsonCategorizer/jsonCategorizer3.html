@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deep Hierarchical Keyword Classification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .drop-area {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      background-color: #fafafa;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .drop-area:hover {
+      background-color: #f0f0f0;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 5px 0;
+      cursor: pointer;
+    }
+
+    .nested {
+      padding-left: 20px;
+      display: none;
+    }
+
+    .active {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Deep Hierarchical Keyword Classification</h1>
+    <div class="drop-area" id="dropArea">
+      <p>Drag and drop a .json file here</p>
+    </div>
+    <div id="treeContainer"></div>
+  </div>
+
+  <script>
+    const dropArea = document.getElementById('dropArea');
+    const treeContainer = document.getElementById('treeContainer');
+
+    dropArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropArea.style.backgroundColor = "#f0f0f0";
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+      dropArea.style.backgroundColor = "#fafafa";
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropArea.style.backgroundColor = "#fafafa";
+      handleFile(e.dataTransfer.files[0]);
+    });
+
+    function handleFile(file) {
+      if (!file || !file.name.endsWith('.json')) {
+        alert('Please upload a valid .json file.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          const processedData = processKeywords(data);
+          const tree = generateDeepHierarchy(processedData, data);
+          displayTree(tree);
+        } catch (err) {
+          console.error('Error parsing JSON:', err);
+          alert('Error parsing the JSON file.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Clean and split keywords (remove non-English and special characters)
+    function processKeywords(data) {
+      const cleanData = data.map((item) => {
+        return {
+          ...item,
+          Keywords: item.Keywords
+            .toLowerCase()
+            .split(', ')
+            .filter((word) => /^[a-zA-Z\s]+$/.test(word)) // Remove non-English or special chars
+        };
+      });
+
+      // Create clusters based on keywords
+      const clusters = createClusters(cleanData);
+      return clusters;
+    }
+
+    // Create clusters by grouping related words
+    function createClusters(data) {
+      const clusters = {};
+      const maxClusters = 20; // Set max categories
+
+      // Create basic categories based on recurring keywords
+      const allKeywords = data.flatMap(item => item.Keywords);
+      const uniqueKeywords = [...new Set(allKeywords)];
+
+      uniqueKeywords.forEach((keyword) => {
+        // Grouping based on similar meaning (for simplicity, we'll cluster by the presence of certain keywords)
+        const relatedItems = data.filter(item => item.Keywords.includes(keyword));
+        
+        // Assign to categories based on some heuristic (e.g., first 20 words form the clusters)
+        let clusterName = keyword;
+        if (!clusters[clusterName]) {
+          clusters[clusterName] = [];
+        }
+
+        relatedItems.forEach((item) => {
+          clusters[clusterName].push(item);
+        });
+      });
+
+      return clusters;
+    }
+
+    // Generate the hierarchical structure
+    function generateDeepHierarchy(clusters, data) {
+      const root = document.createElement('ul');
+
+      Object.entries(clusters).forEach(([clusterName, articles]) => {
+        const clusterLi = document.createElement('li');
+        clusterLi.textContent = `${clusterName.toUpperCase()}`;
+
+        const nestedUl = document.createElement('ul');
+        nestedUl.classList.add('nested');
+
+        articles.forEach((article) => {
+          const articleLi = document.createElement('li');
+          articleLi.textContent = `${article.Title}`;
+
+          nestedUl.appendChild(articleLi);
+        });
+
+        clusterLi.addEventListener('click', () => {
+          nestedUl.classList.toggle('active');
+        });
+
+        clusterLi.appendChild(nestedUl);
+        root.appendChild(clusterLi);
+      });
+
+      return root;
+    }
+
+    function displayTree(tree) {
+      treeContainer.innerHTML = '';
+      treeContainer.appendChild(tree);
+    }
+  </script>
+</body>
+
+</html>

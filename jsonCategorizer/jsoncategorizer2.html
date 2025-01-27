@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deep Hierarchical Keyword Classification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .drop-area {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      background-color: #fafafa;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .drop-area:hover {
+      background-color: #f0f0f0;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 5px 0;
+      cursor: pointer;
+    }
+
+    .nested {
+      padding-left: 20px;
+      display: none;
+    }
+
+    .active {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Deep Hierarchical Keyword Classification</h1>
+    <div class="drop-area" id="dropArea">
+      <p>Drag and drop a .json file here</p>
+    </div>
+    <div id="treeContainer"></div>
+  </div>
+
+  <script>
+    const dropArea = document.getElementById('dropArea');
+    const treeContainer = document.getElementById('treeContainer');
+
+    // Event listeners for drag and drop
+    dropArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropArea.style.backgroundColor = "#f0f0f0";
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+      dropArea.style.backgroundColor = "#fafafa";
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropArea.style.backgroundColor = "#fafafa";
+      handleFile(e.dataTransfer.files[0]);
+    });
+
+    // Handle uploaded file
+    function handleFile(file) {
+      if (!file || !file.name.endsWith('.json')) {
+        alert('Please upload a valid .json file.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          const processedData = processKeywords(data);
+          const tree = generateDeepHierarchy(processedData, data);
+          displayTree(tree);
+        } catch (err) {
+          console.error('Error parsing JSON:', err);
+          alert('Error parsing the JSON file.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Process keywords to calculate TF-IDF and categorize
+    function processKeywords(data) {
+      const documents = data.map((item) => item.Keywords.toLowerCase().split(', '));
+      const vocabulary = [...new Set(documents.flat())]; // Unique words
+
+      const tfidfScores = {};
+      vocabulary.forEach((word) => {
+        let tfSum = 0;
+        let docCount = 0;
+
+        documents.forEach((doc) => {
+          const wordCount = doc.filter((w) => w === word).length;
+          if (wordCount > 0) {
+            tfSum += wordCount / doc.length; // Term Frequency
+            docCount++;
+          }
+        });
+
+        const idf = Math.log(documents.length / (1 + docCount)); // Inverse Document Frequency
+        tfidfScores[word] = tfSum * idf;
+      });
+
+      // Sort vocabulary by TF-IDF scores
+      const sortedVocabulary = Object.entries(tfidfScores).sort((a, b) => b[1] - a[1]).map((entry) => entry[0]);
+
+      // Create clusters based on sorted vocabulary
+      const clusters = createClusters(sortedVocabulary, tfidfScores, 5); // Adjust number of clusters
+      return clusters;
+    }
+
+    // Create clusters based on vocabulary and scores
+    function createClusters(vocabulary, tfidfScores, numClusters) {
+      const clusters = Array.from({ length: numClusters }, () => []);
+
+      // Create a basic clustering mechanism by grouping words based on their sorted TF-IDF scores
+      vocabulary.forEach((word, index) => {
+        const clusterIndex = index % numClusters;
+        clusters[clusterIndex].push(word);
+      });
+
+      return clusters;
+    }
+
+    // Generate deep hierarchical tree structure
+    function generateDeepHierarchy(clusters, data) {
+      const root = document.createElement('ul');
+      
+      clusters.forEach((cluster) => {
+        const clusterLi = document.createElement('li');
+        const clusterKeyword = cluster[0].toUpperCase(); // Use the first word in the cluster as the cluster name
+        clusterLi.textContent = clusterKeyword;
+
+        const nestedUl = document.createElement('ul');
+        nestedUl.classList.add('nested');
+
+        cluster.forEach((word) => {
+          const wordLi = document.createElement('li');
+          wordLi.textContent = `${word.toUpperCase()} (Occurrences: ${data.filter((item) => item.Keywords.toLowerCase().includes(word)).length})`;
+
+          const subNestedUl = document.createElement('ul');
+          subNestedUl.classList.add('nested');
+
+          // Add articles that contain this keyword
+          const articles = data.filter((item) =>
+            item.Keywords.toLowerCase().includes(word)
+          );
+
+          articles.forEach((article) => {
+            const articleLi = document.createElement('li');
+            articleLi.textContent = `${article.Title}`;
+            subNestedUl.appendChild(articleLi);
+          });
+
+          wordLi.addEventListener('click', () => {
+            subNestedUl.classList.toggle('active');
+          });
+
+          wordLi.appendChild(subNestedUl);
+          nestedUl.appendChild(wordLi);
+        });
+
+        clusterLi.addEventListener('click', () => {
+          nestedUl.classList.toggle('active');
+        });
+
+        clusterLi.appendChild(nestedUl);
+        root.appendChild(clusterLi);
+      });
+
+      return root;
+    }
+
+    // Display hierarchical tree
+    function displayTree(tree) {
+      treeContainer.innerHTML = '';
+      treeContainer.appendChild(tree);
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hierarchical Keyword Classification</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .drop-area {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      background-color: #fafafa;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .drop-area:hover {
+      background-color: #f0f0f0;
+    }
+
+    .loading {
+      text-align: center;
+      font-size: 18px;
+      color: #555;
+      display: none;
+    }
+
+    .toggle-btn {
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .nested {
+      padding-left: 20px;
+      display: none;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .statistics {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Hierarchical Keyword Classification</h1>
+    <div class="drop-area" id="dropArea">
+      <p>Drag and drop a .json file here or click to upload.</p>
+      <input type="file" id="fileInput" style="display: none;" />
+    </div>
+    <div id="loadingMessage" class="loading">Processing File...</div>
+    <div id="treeContainer"></div>
+    <div id="statisticsContainer" class="statistics"></div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const treeContainer = document.getElementById('treeContainer');
+    const statisticsContainer = document.getElementById('statisticsContainer');
+    const loadingMessage = document.getElementById('loadingMessage');
+
+    dropArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropArea.style.backgroundColor = "#f0f0f0";
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+      dropArea.style.backgroundColor = "#fafafa";
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropArea.style.backgroundColor = "#fafafa";
+      handleFile(e.dataTransfer.files[0]);
+    });
+
+    dropArea.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+      if (!file || !file.name.endsWith('.json')) {
+        alert('Please upload a valid .json file.');
+        return;
+      }
+
+      loadingMessage.style.display = 'block';  // Show loading message
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (Array.isArray(data)) {
+            const processedData = processKeywords(data);
+            const tree = generateDeepHierarchy(processedData);
+            displayTree(tree);
+            displayStatistics(processedData, data);
+          } else {
+            alert('Invalid JSON format. Ensure the file contains an array of objects.');
+          }
+        } catch (err) {
+          console.error('Error parsing JSON:', err);
+          alert('Error parsing the JSON file.');
+        } finally {
+          loadingMessage.style.display = 'none';  // Hide loading message
+        }
+      };
+      reader.readAsText(file); // Read the file as text
+    }
+
+    function processKeywords(data) {
+      const cleanData = data.map((item) => {
+        return {
+          ...item,
+          Keywords: item.Keywords
+            .toLowerCase()
+            .split(', ')
+            .filter((word) => /^[a-zA-Z\s]+$/.test(word)) // Remove non-English or special chars
+        };
+      });
+
+      const clusters = createClusters(cleanData);
+      return clusters;
+    }
+
+    function createClusters(data) {
+      const clusters = {};
+      const tfidf = calculateTFIDF(data);
+
+      Object.entries(tfidf).forEach(([keyword, score]) => {
+        const clusterName = getClusterName(keyword);
+        if (!clusters[clusterName]) {
+          clusters[clusterName] = [];
+        }
+        clusters[clusterName].push(keyword);
+      });
+
+      Object.entries(clusters).forEach(([clusterName, keywords]) => {
+        if (keywords.length < 50) {
+          if (!clusters["OTHERS"]) clusters["OTHERS"] = [];
+          clusters["OTHERS"].push(...keywords);
+          delete clusters[clusterName];
+        }
+      });
+
+      const subClusters = {};
+      Object.entries(clusters).forEach(([clusterName, keywords]) => {
+        subClusters[clusterName] = createSubClusters(keywords, data);
+      });
+
+      return subClusters;
+    }
+
+    function calculateTFIDF(data) {
+      const tf = {};
+      const idf = {};
+      const totalDocs = data.length;
+
+      data.forEach((item) => {
+        item.Keywords.forEach((keyword) => {
+          if (!tf[keyword]) {
+            tf[keyword] = 0;
+          }
+          tf[keyword]++;
+        });
+      });
+
+      Object.keys(tf).forEach((word) => {
+        let docCount = 0;
+        data.forEach((item) => {
+          if (item.Keywords.includes(word)) {
+            docCount++;
+          }
+        });
+        idf[word] = Math.log(totalDocs / (docCount || 1));
+      });
+
+      const tfidf = {};
+      Object.keys(tf).forEach((word) => {
+        tfidf[word] = tf[word] * idf[word];
+      });
+
+      return tfidf;
+    }
+
+    function getClusterName(keyword) {
+      return keyword.split(' ')[0].toUpperCase();
+    }
+
+    function createSubClusters(keywords, data) {
+      const subClusters = {};
+
+      keywords.forEach((keyword) => {
+        const subClusterName = getSubClusterName(keyword);
+        if (!subClusters[subClusterName]) {
+          subClusters[subClusterName] = [];
+        }
+        subClusters[subClusterName].push(keyword);
+      });
+
+      Object.entries(subClusters).forEach(([subClusterName, keywords]) => {
+        subClusters[subClusterName] = addTitlesToSubCluster(subClusterName, keywords, data);
+      });
+
+      return subClusters;
+    }
+
+    function getSubClusterName(keyword) {
+      const parts = keyword.split(' ');
+      return parts[1] ? parts[1].toUpperCase() : parts[0].toUpperCase();
+    }
+
+    function addTitlesToSubCluster(subClusterName, keywords, data) {
+      const titles = [];
+      data.forEach((item) => {
+        if (item.Keywords.some((keyword) => keywords.includes(keyword))) {
+          titles.push(item.Title);
+        }
+      });
+      return { keywords, titles };
+    }
+
+    function generateDeepHierarchy(clusters) {
+      const root = document.createElement('ul');
+
+      Object.entries(clusters).forEach(([clusterName, subClusters]) => {
+        const clusterLi = document.createElement('li');
+        clusterLi.textContent = `${clusterName}`;
+        const toggleBtn = document.createElement('span');
+        toggleBtn.textContent = '[+]';
+        toggleBtn.classList.add('toggle-btn');
+        clusterLi.insertBefore(toggleBtn, clusterLi.firstChild);
+
+        const nestedUl = document.createElement('ul');
+        nestedUl.classList.add('nested');
+
+        Object.entries(subClusters).forEach(([subClusterName, { keywords, titles }]) => {
+          const subClusterLi = document.createElement('li');
+          subClusterLi.textContent = `${subClusterName}`;
+          const subToggleBtn = document.createElement('span');
+          subToggleBtn.textContent = '[+]';
+          subToggleBtn.classList.add('toggle-btn');
+          subClusterLi.insertBefore(subToggleBtn, subClusterLi.firstChild);
+
+          const subNestedUl = document.createElement('ul');
+          subNestedUl.classList.add('nested');
+
+          titles.forEach((title) => {
+            const articleLi = document.createElement('li');
+            articleLi.textContent = `Title: ${title}`;
+            subNestedUl.appendChild(articleLi);
+          });
+
+          subClusterLi.appendChild(subNestedUl);
+          nestedUl.appendChild(subClusterLi);
+        });
+
+        clusterLi.appendChild(nestedUl);
+        root.appendChild(clusterLi);
+
+        toggleBtn.addEventListener('click', () => {
+          nestedUl.classList.toggle('active');
+          toggleBtn.textContent = nestedUl.classList.contains('active') ? '[-]' : '[+]';
+        });
+      });
+
+      return root;
+    }
+
+    function displayTree(tree) {
+      treeContainer.innerHTML = '';
+      treeContainer.appendChild(tree);
+    }
+
+    function displayStatistics(clusters, data) {
+      let totalClusters = Object.keys(clusters).length;
+      let totalSubclusters = Object.values(clusters).reduce((acc, subClusters) => {
+        return acc + Object.keys(subClusters).length;
+      }, 0);
+
+      let totalKeywords = data.reduce((acc, item) => acc + item.Keywords.split(', ').length, 0);
+
+      statisticsContainer.innerHTML = `
+        <p>Total Clusters: ${totalClusters}</p>
+        <p>Total Subclusters: ${totalSubclusters}</p>
+        <p>Total Keywords: ${totalKeywords}</p>
+      `;
+    }
+  </script>
+</body>
+
+</html>

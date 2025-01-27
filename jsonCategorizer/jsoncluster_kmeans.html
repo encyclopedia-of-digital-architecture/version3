@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hierarchical Clustering with K-Means and TF-IDF</title>
+    
+    <!-- Load Natural.js for TF-IDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/natural/0.6.3/natural.min.js"></script>
+
+    <!-- Link to Stylesheet (Ensure the correct path) -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Hierarchical Clustering of Articles with TF-IDF and K-Means</h1>
+
+        <!-- File input for loading JSON -->
+        <input type="file" id="json-file" accept=".json">
+        <button id="load-btn">Load JSON File</button>
+
+        <div id="clusters-container"></div>
+    </div>
+
+    <script>
+        // Handle file upload
+        document.getElementById('load-btn').addEventListener('click', function () {
+            const fileInput = document.getElementById('json-file');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const jsonData = JSON.parse(e.target.result);
+                    processJsonData(jsonData);
+                };
+                reader.readAsText(file);
+            } else {
+                alert("Please select a JSON file first.");
+            }
+        });
+
+        // Process the loaded JSON data
+        function processJsonData(jsonData) {
+            const articles = Array.isArray(jsonData) ? jsonData : [];
+
+            if (articles.length === 0) {
+                alert("No articles found in the JSON file.");
+                return;
+            }
+
+            // Extract text (e.g., Summary, Title)
+            const summaries = articles.map(article => article.Summary || article.Title || article.Keywords);
+            
+            if (summaries.length === 0) {
+                alert("No valid text found in the JSON file.");
+                return;
+            }
+
+            const tfidf = preprocessText(summaries);
+            performClustering(tfidf, articles);
+        }
+
+        // Preprocess text using TF-IDF
+        function preprocessText(textArray) {
+            const TfIdf = natural.TfIdf;
+            const tfidf = new TfIdf();
+
+            // Add each article's text to the TF-IDF instance
+            textArray.forEach(text => tfidf.addDocument(text));
+
+            return tfidf;
+        }
+
+        // Perform K-Means clustering (Use dummy clustering for now)
+        function performClustering(tfidf, articles) {
+            const clusters = [];
+            for (let i = 0; i < articles.length; i++) {
+                const clusterIndex = Math.floor(Math.random() * 3);  // Randomly assign to 3 clusters
+                if (!clusters[clusterIndex]) clusters[clusterIndex] = [];
+                clusters[clusterIndex].push(i);
+            }
+            hierarchicalClustering(clusters, articles);
+        }
+
+        // Hierarchical clustering (dummy)
+        function hierarchicalClustering(clusters, articles) {
+            clusters.forEach((cluster, index) => {
+                const subclusters = createSubclusters(cluster, articles);
+                displayClusters(subclusters, index);
+            });
+        }
+
+        // Create subclusters (split randomly)
+        function createSubclusters(cluster, articles) {
+            const middle = Math.floor(cluster.length / 2);
+            return [
+                { name: 'Subcluster 1', articles: cluster.slice(0, middle).map(index => articles[index]) },
+                { name: 'Subcluster 2', articles: cluster.slice(middle).map(index => articles[index]) }
+            ];
+        }
+
+        // Display clusters and subclusters
+        function displayClusters(clusters, clusterIndex) {
+            const clustersContainer = document.getElementById('clusters-container');
+            const clusterElement = document.createElement('div');
+            clusterElement.classList.add('cluster');
+            clusterElement.innerHTML = `<h2>Cluster ${clusterIndex + 1}</h2>`;
+
+            clusters.forEach((subcluster, subclusterIndex) => {
+                const subclusterElement = document.createElement('div');
+                subclusterElement.classList.add('subcluster');
+                subclusterElement.innerHTML = `<h3>${subcluster.name}: ${getTopWords(subcluster.articles.map(a => a.Summary || a.Title).join(' '))}</h3>`;
+
+                subcluster.articles.forEach(article => {
+                    const articleElement = document.createElement('div');
+                    articleElement.classList.add('article');
+                    articleElement.innerHTML = `
+                        <div class="title">${article.Title}</div>
+                        <div class="summary">${article.Summary}</div>
+                    `;
+                    subclusterElement.appendChild(articleElement);
+                });
+
+                clusterElement.appendChild(subclusterElement);
+            });
+
+            clustersContainer.appendChild(clusterElement);
+        }
+
+        // Get top words (keywords)
+        function getTopWords(text, numWords = 3) {
+            const wordCount = {};
+            const words = text.toLowerCase().split(/\W+/).filter(word => word.length > 1); // Remove non-word characters
+            words.forEach(word => {
+                wordCount[word] = (wordCount[word] || 0) + 1;
+            });
+
+            // Sort words by frequency and return the top 'numWords'
+            const sortedWords = Object.entries(wordCount).sort((a, b) => b[1] - a[1]);
+            return sortedWords.slice(0, numWords).map(entry => entry[0]).join(', ');
+        }
+    </script>
+
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* File Upload */
+        #json-file {
+            margin-bottom: 15px;
+        }
+
+        #load-btn {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #load-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Cluster Styles */
+        .cluster {
+            margin-bottom: 30px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cluster h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+            color: #007bff;
+        }
+
+        /* Subcluster Styles */
+        .subcluster {
+            margin-top: 10px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            margin-bottom: 15px;
+        }
+
+        .subcluster h3 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        /* Article Styles */
+        .article {
+            margin-top: 5px;
+        }
+
+        .article .title {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .article .summary {
+            margin-top: 5px;
+        }
+    </style>
+</body>
+</html>

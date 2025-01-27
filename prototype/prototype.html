@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.5/build/d3.layout.cloud.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #word-cloud {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 20vw;
+            height: 50vh;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            overflow: hidden;
+            display: none;
+            /* Başlangıçta gizli */
+        }
+
+        #visual-container {
+            position: absolute;
+            top: 10px;
+            right: 40px;
+            display: block;
+            width: 20vw;
+            height: 70vh;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .visual-item {
+            width: 100%;
+            height: 200px;
+            background-color: #f0f0f0;
+            margin-bottom: 20px;
+            text-align: center;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .visual-item img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+            margin-top: 20px;
+        }
+
+        .visual-item h3 {
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        #iframe-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 25vw;
+            height: 50vh;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            overflow: hidden;
+            display: none;
+            /* Başlangıçta gizli */
+        }
+        #configurational {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 60vw;
+            height: 100vh;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            overflow: hidden;
+            display: none;
+            /* Başlangıçta gizli */
+        }
+        .sunburst-container {
+            width: 50%;
+            height: 50%;
+            margin: 0 auto;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sunburst-container" id="sunburst-chart"></div>
+    <div id="word-cloud"></div>
+    <div id="flowchart"></div> <!-- Akış şeması için container -->
+    <div id="visual-container"></div>
+    <!-- Iframe container -->
+    <div id="iframe-container" style="display: none;">
+        <!-- Iframe for Collaborative Robotic Masonry and Early Stage Fatigue Prediction -->
+        <iframe id="collaborative-iframe" style="display: none;" width="100%" height="600px"></iframe>
+
+        <!-- Iframe for Arobot -->
+        <iframe id="arobot-iframe" style="display: none;" width="100%" height="600px"></iframe>
+
+        <!-- Iframe for Adaptive Industrial Robot Control -->
+        <iframe id="adaptive-iframe" style="display: none;" width="100%" height="600px"></iframe>
+    </div>
+
+    <div id="configurational" style="display: none;">
+        <!-- Iframe for Collaborative Robotic Masonry and Early Stage Fatigue Prediction -->
+        <iframe id="collaborative-iframe2" style="display: none;" width="100%" height="600px"></iframe>
+
+        <!-- Iframe for Arobot -->
+        <iframe id="arobot-iframe2" style="display: none;" width="100%" height="600px"></iframe>
+
+        <!-- Iframe for Adaptive Industrial Robot Control -->
+        <iframe id="adaptive-iframe2" style="display: none;" width="100%" height="600px"></iframe>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // İlgili iframe'leri göstermek için fonksiyonlar
+            function showIframeWithCollaborativeFC() {
+                const iframeContainer = document.getElementById('iframe-container');
+                const iframe = document.getElementById('collaborative-iframe');
+                const allIframes = iframeContainer.querySelectorAll('iframe');
+        
+                // Tüm iframe'leri gizle
+                allIframes.forEach(iframe => iframe.style.display = 'none');
+        
+                // İlgili iframe'i göster
+                iframe.style.display = 'block';
+                iframe.src = 'collaborativeFC.html'; // Set iframe source to collaborativeFC.html
+                iframeContainer.style.display = 'block'; // Make iframe container visible
+            }
+        
+            function showIframeWithArobotFC() {
+                const iframeContainer = document.getElementById('iframe-container');
+                const iframe = document.getElementById('arobot-iframe');
+                const allIframes = iframeContainer.querySelectorAll('iframe');
+        
+                // Tüm iframe'leri gizle
+                allIframes.forEach(iframe => iframe.style.display = 'none');
+        
+                // İlgili iframe'i göster
+                iframe.style.display = 'block';
+                iframe.src = 'arobotFC.html'; // Set iframe source to arobotFC.html
+                iframeContainer.style.display = 'block'; // Make iframe container visible
+            }
+        
+            function showIframeWithAdaptiveFC() {
+                const iframeContainer = document.getElementById('iframe-container');
+                const iframe = document.getElementById('adaptive-iframe');
+                const allIframes = iframeContainer.querySelectorAll('iframe');
+        
+                // Tüm iframe'leri gizle
+                allIframes.forEach(iframe => iframe.style.display = 'none');
+        
+                // İlgili iframe'i göster
+                iframe.style.display = 'block';
+                iframe.src = 'adaptiveFC.html'; // Set iframe source to adaptiveFC.html
+                iframeContainer.style.display = 'block'; // Make iframe container visible
+            }
+        
+            // iframe'leri gizleme
+            function hideIframe() {
+                const iframeContainer = document.getElementById('iframe-container');
+                iframeContainer.style.display = 'none'; // iframe'i gizliyoruz  
+            }
+        
+            // Wordcloud temizleme
+            function clearWordCloud() {
+                document.getElementById("word-cloud").innerHTML = ""; // Wordcloud'u temizle
+                document.getElementById("word-cloud").style.display = "none"; // Gizle
+            }
+        
+            // Flowchart temizleme
+            function clearFlowchart() {
+                document.getElementById("flowchart").innerHTML = ""; // Akış şemasını temizle
+                document.getElementById("flowchart").style.display = "none"; // Gizle
+            }
+        
+            // Görselleri temizle
+            function clearVisuals() {
+                document.getElementById('visual-container').innerHTML = '';
+            }
+
+            function clearConfigurational() {
+                document.getElementById('configurational').innerHTML = '';
+            }
+
+
+                function showIframeWithCollaborativeIF() {
+                    const iframeContainer = document.getElementById('iframe-container');
+                    const iframe = document.getElementById('collaborative-iframe');
+                    const allIframes = iframeContainer.querySelectorAll('iframe');
+            
+                    // Tüm iframe'leri gizle
+                    allIframes.forEach(iframe => iframe.style.display = 'none');
+            
+                    // İlgili iframe'i göster
+                    iframe.style.display = 'block';
+                    iframe.src = 'collaborativeIF.html'; // Set iframe source to collaborativeFC.html
+                    iframeContainer.style.display = 'block'; // Make iframe container visible
+                }
+            
+                function showIframeWithArobotIF() {
+                    const iframeContainer = document.getElementById('iframe-container');
+                    const iframe = document.getElementById('arobot-iframe');
+                    const allIframes = iframeContainer.querySelectorAll('iframe');
+            
+                    // Tüm iframe'leri gizle
+                    allIframes.forEach(iframe => iframe.style.display = 'none');
+            
+                    // İlgili iframe'i göster
+                    iframe.style.display = 'block';
+                    iframe.src = 'arobotIF.html'; // Set iframe source to arobotFC.html
+                    iframeContainer.style.display = 'block'; // Make iframe container visible
+                }
+            
+                function showIframeWithAdaptiveIF() {
+                    const iframeContainer = document.getElementById('iframe-container');
+                    const iframe = document.getElementById('adaptive-iframe');
+                    const allIframes = iframeContainer.querySelectorAll('iframe');
+            
+                    // Tüm iframe'leri gizle
+                    allIframes.forEach(iframe => iframe.style.display = 'none');
+            
+                    // İlgili iframe'i göster
+                    iframe.style.display = 'block';
+                    iframe.src = 'adaptiveIF.html'; // Set iframe source to adaptiveFC.html
+                    iframeContainer.style.display = 'block'; // Make iframe container visible
+                }
+            
+                // iframe'leri gizleme
+                function hideIframe() {
+                    const iframeContainer = document.getElementById('iframe-container');
+                    iframeContainer.style.display = 'none'; // iframe'i gizliyoruz  
+                }
+            
+                // Wordcloud temizleme
+                function clearWordCloud() {
+                    document.getElementById("word-cloud").innerHTML = ""; // Wordcloud'u temizle
+                    document.getElementById("word-cloud").style.display = "none"; // Gizle
+                }
+            
+                // Flowchart temizleme
+                function clearFlowchart() {
+                    document.getElementById("flowchart").innerHTML = ""; // Akış şemasını temizle
+                    document.getElementById("flowchart").style.display = "none"; // Gizle
+                }
+            
+                // Görselleri temizle
+                function clearVisuals() {
+                    document.getElementById('visual-container').innerHTML = '';
+                }
+    
+                function clearConfigurational() {
+                    document.getElementById('configurational').innerHTML = '';
+                }
+    
+        
+            // Sunburst chart tıklama işlemi
+            fetch('json.json')
+                .then(response => response.json())
+                .then(data => {
+                    const svg = createSunburstChart(data);
+                    document.getElementById('sunburst-chart').appendChild(svg);
+        
+                    svg.addEventListener('click', function (event) {
+                        const clickedNode = event.target.__data__;
+        
+                        // Her tıklamada tüm içerikleri temizle
+                        clearWordCloud();
+                        clearFlowchart();
+                        clearVisuals();
+                        hideIframe(); // iframe'i kaldır
+        
+                        if (clickedNode && clickedNode.data.name === "Conceptual Knowledge") {
+                            let parentNode = clickedNode.parent;
+                            while (parentNode) {
+                                if (parentNode.data.summary) {
+                                    const summaryText = parentNode.data.summary;
+                                    generateWordCloud(summaryText); // Wordcloud oluştur
+                                    showIframe(); // iframe'i göster
+                                    return; // İşlemi sonlandır
+                                }
+                                parentNode = parentNode.parent; // Üst düğüme geç
+                            }
+                        }
+        
+                        else if (clickedNode && clickedNode.data.name === "Procedural Knowledge") {
+                            let parentNode = clickedNode.parent;
+                            hideIframe(); // iframe'i kaldır
+        
+                            while (parentNode) {
+                                if (parentNode.data.name === "Collaborative Robotic Masonry and Early Stage Fatigue Prediction") {
+                                    showIframeWithCollaborativeFC(); 
+                                    return; 
+                                }
+        
+                                if (parentNode.data.name === "[AR]OBOT: the AR-Assisted Robotic Fabrication System for Parametric Architectural Structures") {
+                                    showIframeWithArobotFC();  
+                                    return;  
+                                }
+        
+                                if (parentNode.data.name === "Adaptive Industrial Robot Control for Designers") {
+                                    showIframeWithAdaptiveFC();  
+                                    return;  
+                                }
+        
+                                parentNode = parentNode.parent; 
+                            }
+                        }
+
+                        else if (clickedNode && clickedNode.data.name === "Configurational Knowledge") {
+                            let parentNode = clickedNode.parent;
+                            hideIframe(); // iframe'i kaldır
+        
+                            while (parentNode) {
+                                if (parentNode.data.name === "Collaborative Robotic Masonry and Early Stage Fatigue Prediction") {
+                                    showIframeWithCollaborativeIF(); 
+                                    return; 
+                                }
+        
+                                if (parentNode.data.name === "[AR]OBOT: the AR-Assisted Robotic Fabrication System for Parametric Architectural Structures") {
+                                    showIframeWithArobotIF();  
+                                    return;  
+                                }
+        
+                                if (parentNode.data.name === "Adaptive Industrial Robot Control for Designers") {
+                                    showIframeWithAdaptiveIF();  
+                                    return;  
+                                }
+        
+                                parentNode = parentNode.parent; 
+                            }
+                        }
+        
+                        else if (clickedNode && clickedNode.data.name === "Visual Knowledge") {
+                            let parentNode = clickedNode.parent;
+                            while (parentNode) {
+                                if (parentNode.data.keywords) {
+                                    const keywords = parentNode.data.keywords.split(',').map(keyword => keyword.trim());
+                                    generateVisuals(keywords); // Görselleri oluştur
+                                    return;  
+                                }
+                                parentNode = parentNode.parent; 
+                            }
+                        }
+                    });
+                });
+        });
+        
+
+
+            // Sunburst grafiğini oluştur
+            function createSunburstChart(data) {
+                const width = 928;
+                const height = width;
+                const radius = width / 6;
+                const color = d3.scaleOrdinal()
+                    .domain(d3.range(data.children.length))  // Veri uzunluğuna göre domain ayarlıyoruz
+                    .range(["#003366", "#004488", "#005599", "#0066cc", "#0077dd"]); // Koyu mavi renk tonları
+
+
+                const hierarchy = d3.hierarchy(data)
+                    .sum(d => d.value)
+                    .sort((a, b) => b.value - a.value);
+
+                const root = d3.partition()
+                    .size([2 * Math.PI, hierarchy.height + 1])
+                    (hierarchy);
+
+                root.each(d => d.current = d);
+
+                const arc = d3.arc()
+                    .startAngle(d => d.x0)
+                    .endAngle(d => d.x1)
+                    .padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.005))
+                    .padRadius(radius * 1.5)
+                    .innerRadius(d => d.y0 * radius)
+                    .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1));
+
+                const svg = d3.create("svg")
+                    .attr("viewBox", [-width / 2, -height / 2, width, width])  // Merkezde konumlandırma
+                    .style("font", "10px sans-serif");
+
+                const path = svg.append("g")
+                    .selectAll("path")
+                    .data(root.descendants().slice(1)) 
+                    .join("path")
+                    .attr("fill", d => { while (d.depth > 1) d = d.parent; return color(d.data.name); })
+                    .attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
+                    .attr("pointer-events", d => arcVisible(d.current) ? "auto" : "none")
+                    .attr("d", d => arc(d.current));
+
+                path.filter(d => d.children)
+                    .style("cursor", "pointer")
+                    .on("click", clicked);
+
+                const format = d3.format(",d");
+                path.append("title")
+                    .text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.value)}`);
+
+                const label = svg.append("g")
+                    .attr("pointer-events", "none")
+                    .attr("text-anchor", "middle")
+                    .style("user-select", "none")
+                    .selectAll("text")
+                    .data(root.descendants().slice(1))
+                    .join("text")
+                    .attr("dy", "0.35em")
+                    .attr("fill-opacity", d => +labelVisible(d.current))
+                    .attr("transform", d => labelTransform(d.current))
+                    .text(d => d.data.name.length > 20 ? d.data.name.slice(0, 15) + "..." : d.data.name);
+
+                const parent = svg.append("circle")
+                    .datum(root)
+                    .attr("r", radius)
+                    .attr("fill", "none")
+                    .attr("pointer-events", "all")
+                    .on("click", clicked);
+
+                let parentNameLabel = svg.append("text")
+                    .attr("dy", "0.5em")
+                    .attr("text-anchor", "middle")
+                    .style("user-select", "none")
+                    .attr("fill-opacity", 1)
+                    .style("font-size", "12px")
+                    .style("font-family", "Segoe UI")
+                    .style("font-weight", "bold")
+                    .text(root.data.name);
+
+                let currentDepth = 1;
+
+                function clicked(event, p) {
+                    parent.datum(p.depth === 0 ? null : p.parent || root);
+                    parentNameLabel.text(p.depth === 0 ? root.data.name : p.data.name);
+
+
+
+                    root.each(d => d.target = {
+                        x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+                        x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+                        y0: Math.max(0, d.y0 - p.depth),
+                        y1: Math.max(0, d.y1 - p.depth)
+                    });
+
+                    const t = svg.transition().duration(event.altKey ? 7500 : 750);
+
+                    path.transition(t)
+                        .tween("data", d => {
+                            const i = d3.interpolate(d.current, d.target);
+                            return t => d.current = i(t);
+                        })
+                        .filter(function (d) {
+                            return +this.getAttribute("fill-opacity") || arcVisible(d.target);
+                        })
+                        .attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)
+                        .attr("pointer-events", d => arcVisible(d.target) ? "auto" : "none")
+                        .attrTween("d", d => () => arc(d.current));
+
+                    label.filter(function (d) {
+                        return +this.getAttribute("fill-opacity") || labelVisible(d.target);
+                    }).transition(t)
+                        .attr("fill-opacity", d => +labelVisible(d.target))
+                        .attrTween("transform", d => () => labelTransform(d.current));
+                }
+
+                function arcVisible(d) {
+                    return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
+                }
+
+                function labelVisible(d) {
+                    return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
+                }
+
+                function labelTransform(d) {
+                    const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;
+                    const y = (d.y0 + d.y1) / 2 * radius;
+                    return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
+                }
+
+                return svg.node();
+            }
+
+            function generateWordCloud(summaryText) {
+                // Kelimeleri sayma işlemi
+                const wordData = summaryText.split(/\s+/).reduce((acc, word) => {
+                    word = word.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+                    if (word.length > 3) acc[word] = (acc[word] || 0) + 1;
+                    return acc;
+                }, {});
+
+                // Stopwords listesi
+                const stopwords = ["a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for",
+                    "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "also",
+                    "to", "from", "up", "upon", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then",
+                    "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most",
+                    "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "say",
+                    "says", "said", "shall", "i", "me", "my", "myself", "we", "us", "our", "ours", "ourselves", "you", "your",
+                    "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it",
+                    "its", "itself", "they", "them", "their", "theirs", "themselves", "what", "which", "who", "whom", "whose",
+                    "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has",
+                    "had", "having", "do", "does", "did", "doing", "will", "would", "should", "can", "could", "ought", "i'm",
+                    "you're", "he's", "she's", "it's", "we're", "they're", "i've", "you've", "we've", "they've", "i'd", "you'd",
+                    "he'd", "she'd", "we'd", "they'd", "i'll", "you'll", "he'll", "she'll", "we'll", "they'll", "isn't", "aren't",
+                    "wasn't", "weren't", "hasn't", "haven't", "hadn't", "doesn't", "don't", "didn't", "won't", "wouldn't",
+                    "shan't", "shouldn't", "can't", "cannot", "couldn't", "mustn't", "let's", "that's", "who's", "what's",
+                    "here's", "there's", "when's", "where's", "why's", "how's"];
+
+                const filteredWords = Object.entries(wordData)
+                    .filter(([word]) => !stopwords.includes(word))
+                    .map(([word, count]) => ({
+                        text: word,
+                        size: count * 10 
+                    }));
+
+                const maxSize = Math.max(...filteredWords.map(d => d.size)); 
+                const minSize = Math.min(...filteredWords.map(d => d.size));
+
+         
+                filteredWords.forEach(d => {
+                    d.size = Math.floor(((d.size - minSize) / (maxSize - minSize)) * 60 + 10); 
+                });
+
+                const width = window.innerWidth * 0.2; // 20vw
+                const height = window.innerHeight * 0.5; // 50vh
+
+                const color = d3.scaleOrdinal()
+                    .domain(filteredWords.map((_, i) => i)) 
+                    .range(["#72a4ce", "#0031ae", "#4183bb"]);
+
+   
+                const layout = d3.layout.cloud()
+                    .size([width, height]) 
+                    .words(filteredWords)
+                    .padding(5)
+                    .rotate(() => ~~(Math.random() * 2) * 90)
+                    .font("Impact")
+                    .fontSize(d => d.size)
+                    .on("end", draw);
+
+                layout.start();
+
+
+                function draw(words) {
+                    d3.select("#word-cloud").style("display", "block").selectAll("*").remove(); 
+                    d3.select("#word-cloud")
+                        .append("svg")
+                        .attr("width", width)
+                        .attr("height", height)
+                        .append("g")
+                        .attr("transform", `translate(${width / 2},${height / 2})`)
+                        .selectAll("text")
+                        .data(words)
+                        .enter()
+                        .append("text")
+                        .style("font-size", d => `${d.size}px`)
+                        .style("font-family", "Impact")
+                        .style("fill", (d, i) => color(i)) 
+                        .attr("text-anchor", "middle")
+                        .attr("transform", d => `translate(${[d.x, d.y]})rotate(${d.rotate})`)
+                        .text(d => d.text);
+                }
+            }
+            function showIframeWithCollaborativeFC() {
+                const iframeContainer = document.getElementById('iframe-container');
+                const iframe = document.getElementById('collaborative-iframe');
+                const allIframes = iframeContainer.querySelectorAll('iframe');
+
+                // Tüm iframe'leri gizle
+                allIframes.forEach(iframe => iframe.style.display = 'none');
+
+                // İlgili iframe'i göster
+                iframe.style.display = 'block';
+                iframe.src = 'collaborativeFC.html'; // Set iframe source to collaborativeFC.html
+                iframeContainer.style.display = 'block'; // Make iframe container visible
+            }
+
+            function showIframeWithArobotFC() {
+                const iframeContainer = document.getElementById('iframe-container');
+                const iframe = document.getElementById('arobot-iframe');
+                const allIframes = iframeContainer.querySelectorAll('iframe');
+
+                // Tüm iframe'leri gizle
+                allIframes.forEach(iframe => iframe.style.display = 'none');
+
+                // İlgili iframe'i göster
+                iframe.style.display = 'block';
+                iframe.src = 'arobotFC.html'; // Set iframe source to arobotFC.html
+                iframeContainer.style.display = 'block'; // Make iframe container visible
+            }
+
+            function showIframeWithAdaptiveFC() {
+                const iframeContainer = document.getElementById('iframe-container');
+                const iframe = document.getElementById('adaptive-iframe');
+                const allIframes = iframeContainer.querySelectorAll('iframe');
+
+                allIframes.forEach(iframe => iframe.style.display = 'none');
+
+                iframe.style.display = 'block';
+                iframe.src = 'adaptiveFC.html'; // Set iframe source to adaptiveFC.html
+                iframeContainer.style.display = 'block'; // Make iframe container visible
+            }
+
+
+            function removeIframe() {
+                const iframeContainer = document.getElementById('iframe-container');
+                iframeContainer.style.display = 'none'; // iframe'i gizliyoruz
+            }
+
+            function showIframeWithCollaborativeIF() {
+                const iframeContainer = document.getElementById('configurational');
+                const iframe = document.getElementById('collaborative-iframe');
+                const allIframes = iframeContainer.querySelectorAll('iframe');
+
+                // Tüm iframe'leri gizle
+                allIframes.forEach(iframe => iframe.style.display = 'none');
+
+                // İlgili iframe'i göster
+                iframe.style.display = 'block';
+                iframe.src = 'collaborativeIF.html'; // Set iframe source to collaborativeFC.html
+                iframeContainer.style.display = 'block'; // Make iframe container visible
+            }
+
+            function showIframeWithArobotFC() {
+                const iframeContainer = document.getElementById('configurational');
+                const iframe = document.getElementById('arobot-iframe');
+                const allIframes = iframeContainer.querySelectorAll('iframe');
+
+                // Tüm iframe'leri gizle
+                allIframes.forEach(iframe => iframe.style.display = 'none');
+
+                // İlgili iframe'i göster
+                iframe.style.display = 'block';
+                iframe.src = 'arobotIF.html'; // Set iframe source to arobotFC.html
+                iframeContainer.style.display = 'block'; // Make iframe container visible
+            }
+
+            function showIframeWithAdaptiveFC() {
+                const iframeContainer = document.getElementById('configurational');
+                const iframe = document.getElementById('adaptive-iframe');
+                const allIframes = iframeContainer.querySelectorAll('iframe');
+
+                allIframes.forEach(iframe => iframe.style.display = 'none');
+
+                iframe.style.display = 'block';
+                iframe.src = 'adaptiveIF.html'; // Set iframe source to adaptiveFC.html
+                iframeContainer.style.display = 'block'; // Make iframe container visible
+            }
+
+
+            function removeIframe() {
+                const iframeContainer = document.getElementById('configurational');
+                iframeContainer.style.display = 'none'; // iframe'i gizliyoruz
+            }
+
+
+
+            // -----------------------Görselleri oluştur-----------------------------
+            async function generateVisuals(keywords) {
+                const styles = [
+                    { name: "Render", promptSuffix: "highly detailed 3D render" },
+                    { name: "Sketch", promptSuffix: "black and white pencil sketch" },
+                    { name: "Technical Drawing", promptSuffix: "technical drawing in blueprint style" },
+                    { name: "Pictogram", promptSuffix: "flat icon design, pictogram style" }
+                ];
+
+                const visualContainer = document.getElementById('visual-container');
+
+                // Yükleniyor yazısını ekle
+                for (let style of styles) {
+                    const loadingText = document.createElement('div');
+                    loadingText.classList.add('loading');
+                    loadingText.textContent = `${style.name} image is being generated...`;
+                    visualContainer.appendChild(loadingText);
+
+                    const stylePrompt = `${keywords.join(' ')}, ${style.promptSuffix}`;
+                    const imageBlob = await fetchImage(stylePrompt);
+                    const imageURL = URL.createObjectURL(imageBlob);
+
+                    // Görseli ekle
+                    const visualItem = document.createElement('div');
+                    visualItem.classList.add('visual-item');
+                    visualItem.innerHTML = `
+            <h3>${style.name}</h3>
+            <img src="${imageURL}" alt="${style.name}">
+        `;
+                    visualContainer.appendChild(visualItem);
+                }
+
+                // Yükleniyor yazısını kaldır
+                const loadingTexts = document.querySelectorAll('.loading');
+                loadingTexts.forEach(text => text.remove());
+            }
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,711 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI";
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: 1.5;
+  background-color: #fff;
+  position: relative;
+}
+
+.hidden {
+  display: none; /* Eğer bu CSS varsa, öğeleri görünmez yapar. */
+}
+
+
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+}
+
+.navbar .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+#logo-box {
+  margin-right: 25px; /* Add margin to space out the logo */
+}
+
+
+#logo-box img {
+  width: 170px;
+  height: auto;
+  opacity: 0.7;
+}
+
+.navbar .title {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.search-container {
+  margin-left: auto;
+}
+
+
+#questionnaire-btn {
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  background-color: #0031ae;
+}
+
+#questionnaire-btn:hover {
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  background-color: #ffffff;
+  color: #0056b3;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 5px; /* Logo ve başlık için genel boşluk */
+}
+
+
+
+/* Başlık ve açıklama stil ayarı */
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Başlık ve açıklamayı sola hizala */
+}
+
+.display-4 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 2rem;
+  line-height: 1.2;
+  margin: 0; /* Varsayılan marjinleri kaldır */
+  padding: 0;
+  white-space: nowrap; /* Tek satırda kalmasını sağlar */
+  position: absolute;
+  top: 100px; /* Başlığın yukarıdan konumunu ayarla */
+  left: 10px;
+}
+
+.lead {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0; /* Varsayılan marjinleri kaldır */
+  padding: 0;
+  white-space: nowrap; /* Tek satırda kalmasını sağlar */
+  position: absolute;
+  top: 160px; /* Açıklamanın yukarıdan konumunu ayarla */
+  left: 12px;
+}
+
+/* Ekran boyutlarına göre responsive stil ayarı */
+@media (max-width: 992px) {
+  .display-4 {
+    font-size: 1.5rem;
+  }
+  .lead {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .display-4 {
+    font-size: 1.25rem;
+  }
+  .lead {
+    font-size: 0.75rem;
+  }
+}
+
+/* Navbar düzeni ve stil ayarları */
+.navbar-nav {
+  display: flex;
+  margin-left: auto;
+  list-style: none;
+  padding-left: 0;
+  position: absolute;
+  top: 20px; 
+  left: 250px;
+}
+
+.nav-item {
+  margin-left: 150px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #000;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.nav-link i {
+  background-color: #0031ae;
+  color: #fff;
+  border-radius: 50%;
+  padding: 4px;
+  margin-right: 4px;
+}
+
+.nav-link:hover i {
+  background-color: #ffffff;
+  color: #0031ae;
+}
+
+/* Sayfa içi bölümler için stil ayarları */
+.section {
+  padding: 60px 20px;
+}
+
+#home {
+  background-color: #f8f9fa;
+}
+
+#about {
+  background-color: #e9ecef;
+}
+
+#contact {
+  background-color: #dee2e6;
+}
+
+path {
+  pointer-events: all;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted rgb(95, 17, 240);
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: rgb(60, 21, 230);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -20px; /* İstenilen pozisyona göre ayarlayın */
+  left: 50%; /* İstenilen pozisyona göre ayarlayın */
+  transform: translateX(-50%);
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.search-container {
+  position: absolute;
+  top: 25px; /* Navbarın üstünden 10px boşluk bırakır */
+  right: 10px; /* Sağ kenardan 10px boşluk bırakır */
+  display: flex;
+  align-items: center;
+}
+
+.search-container input {
+  padding: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-container button {
+  background-color: #0031ae;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 5px;
+  border-radius: 4px;
+}
+
+.search-container button i {
+  font-size: 16px;
+}
+
+#survey-container {
+  padding: 30px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  margin-top: 30px;
+}
+
+#grid-container {
+  background-color: rgb(255, 255, 255);
+  display: grid;
+  grid-template-columns: 1fr 1fr1fr;
+  row-gap: 50px;
+}
+
+.other-content {
+  position: absolute;
+  top: 550px;
+  right: 0;
+    padding: 20px;
+    margin: 20px auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.discover1 {
+  background: linear-gradient(90deg,
+      rgba(0, 49, 174, 1) 0%,
+      rgba(203, 8, 148, 1) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  font-family: "LibreFranklin-Regular", sans-serif !important; /* Force regular font */
+  font-size: 25px;
+  font-weight: normal !important; /* Force normal font weight */
+  position: absolute; /* Position absolutely */
+  top: calc(20% - 17rem); /* Move 50% down from the top with a 2rem gap */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+  z-index: 20; /* Ensure it's above frame-2 */
+}
+
+.circle-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 5px; /* Adjusted height, set as per your design */
+  position: absolute;
+  top: calc(57% - 1rem); /* Move 50% down from the top with a 2rem gap */
+}
+
+.circle {
+  width: 37vw; /* 35% of the viewport width */
+  height: 37vw; /* 35% of the viewport width */
+  background-color: #D4E3FA; /* A shade of blue */
+  border-radius: 50%;
+  margin: 0px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Adds a shadow */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circle-text {
+  width: 80%; /* Slightly smaller than the circle */
+  height: 80%; /* Slightly smaller than the circle */
+  display: flex;
+  flex-direction: column; /* Ensure text and link stack vertically */
+  align-items: center;
+  justify-content: center;
+  color: #000; /* Black color for text */
+  font-size: 15px; /* Adjust font size to fit inside the circle */
+  text-align: center; /* Center align text */
+  overflow: hidden; /* Hide overflow */
+  margin-top: 30px;
+}
+
+.circle-text a {
+  text-decoration: none; /* Remove underline */
+  color: #0031ae; /* Inherit text color */
+  font-weight: bold; /* Optionally, make the link text bold */
+}
+
+.diagram {
+  color: #ffffff;
+  text-align: center;
+  font-family: "LibreFranklin", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  position: relative;
+  z-index: 20;
+  animation: lightUp 3s infinite alternate;
+  height: 36px; /* Set the same height as the .rectangle-pleaseSelect */
+  line-height: 36px; /* Set line-height equal to height for vertical centering */
+}
+
+.diagram:hover {
+  color: #0031ae;
+}
+
+.rectangle-pleaseSelect {
+  background: #2e61e2;
+  border-radius: 15px;
+  width: 225px;
+  height: 36px;
+  position: relative;
+  left: 5px;
+  top: 15px;
+  z-index: 1;  
+  animation: lightUp 3s infinite alternate;
+  transition: background-color 0.3s ease; /* Add transition for smooth color change */
+}
+
+.rectangle-pleaseSelect:hover {
+  background: rgba(154, 164, 255, 0.712); /* Change background color on hover */
+}
+
+.overflow {
+  position: relative;
+  top: 20px;
+  background-color: #D4E3FA;
+  border-radius: 15px;
+  height: 770px;
+  width: 220px;
+  box-shadow: 4px 4px 3px rgba(19, 0, 122, 0.25);
+  left: 5px;
+}
+
+.overflow-inner1 {
+  top: 0.5rem;
+  background-color: #9AC6EE;
+  border-radius: 8px;
+  height: 400px;
+  width: 180px;
+  margin: 20px;
+  text-align: center;
+}
+.overflow-inner2 {
+  top: 0.5rem;
+  background-color: #9AC6EE;
+  border-radius: 8px;
+  height: 300px;
+  width: 180px;
+  margin: 20px;
+  text-align: center;
+}
+
+.overflow-inner1a,
+.overflow-inner1a2,
+.overflow-inner1b,
+.overflow-inner1c,
+.overflow-inner2a,
+.overflow-inner2b,
+.overflow-inner2c {
+  background-color: rgba(255, 255, 255, 0.692);
+  border-radius: 12px;
+  height: 80px;
+  width: 160px;
+  margin: 10px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+button.overflow-inner1a,
+button.overflow-inner1a2,
+button.overflow-inner1b,
+button.overflow-inner1c {
+  border: none;
+  padding: 0;
+  background-color: #D4E3FA;
+  cursor: pointer;
+  outline: none;
+}
+
+button.overflow-inner1a:hover,
+button.overflow-inner1a2:hover,
+button.overflow-inner1b:hover,
+button.overflow-inner1c:hover,
+.overflow-inner2a:hover,
+.overflow-inner2b:hover,
+.overflow-inner2c:hover {
+  background: #0031ae;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+button.overflow-inner1a.active,
+button.overflow-inner1a2.active,
+button.overflow-inner1b.active,
+button.overflow-inner1c.active {
+  background: #0031ae;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+
+.overflow-inner1a img,
+.overflow-inner1a img,.overflow-inner1a2 img,
+.overflow-inner1b img,
+.overflow-inner1c img,
+.overflow-inner2a img,
+.overflow-inner2b img,
+.overflow-inner2c img {
+  margin: 0 3px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+
+
+#zoomableSunburstContainer {
+  width: 50%;
+  height: 50%;
+  display: none;
+  position: relative;
+  top: -1320px; /* Sayfanın üst kısmına ne kadar yakın olmasını istiyorsanız buradaki değeri ayarlayın */
+  left: 30%; /* Sayfanın sol kısmına göre konumlandırma */
+}
+
+#chart-svg {
+  display: block;
+  transform: translateY(5%);
+}
+
+
+#zoomableCirclePackingContainer {
+  display: none; /* Başlangıçta diyagramları gizleyin */
+  position: absolute;
+  top: 40%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  width: 60%; /* Grafiklerin genişliği */
+  height: 60%; /* Grafiklerin yüksekliği */  
+}
+
+
+#sequencesSunburstContainer {
+  display: none; /* Başlangıçta diyagramları gizleyin */
+  position: absolute;
+  top: 37%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+  width: 50%; /* Grafiklerin genişliği */
+  height: 50%; /* Grafiklerin yüksekliği */
+  overflow: scroll;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none; /* Removes the border around the iframe */
+}
+
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.iframe-container-wrapper {
+  display: flex;
+  gap: 50px; /* Aradaki mesafeyi ayarla */
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: -748px; /* Daha yukarı taşımak için margin */
+  margin-left: 100px;
+  width: 100%; /* Tam genişlik */
+  max-width: none; /* Sınırlamaları kaldır */
+}
+
+
+
+/* Styling for each iframe container */
+.iframe-container {
+  width: 700px; 
+  height: 650px; /* Yükseklik artırıldı */
+  padding: 10px;
+  border: 1px solid #ddd; /* Hafif çerçeve */
+  border-radius: 8px; /* Yuvarlak köşeler */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Hafif gölge */
+  background-color: #f9f9f9; /* Arka plan rengi */
+  transition: all 0.3s ease; /* Yumuşak geçiş efekti */
+  border: 2px dashed rgb(68, 0, 255);
+}
+
+
+/* Styling for the iframe */
+.iframe-container iframe {
+  width: 100%; /* Konteyner genişliğine uyum */
+  height: 100%; /* Konteyner yüksekliğine uyum */
+  border: none; /* Varsayılan çerçeve kaldırıldı */
+  border-radius: 8px; /* Yuvarlak köşeler */
+}
+
+.container {
+  width: 100vw; /* Görüntüleme alanının tamamını kaplasın */
+  max-width: none; /* Genişlik sınırlamasını kaldırın */
+  margin: 0 auto; /* Ortalamayı koruyun */
+  padding: 0; /* Gereksiz boşlukları kaldırın */
+}
+
+
+#conceptual-knowledge-container {
+  position: absolute;
+  width: 35%; /* İçerik iframe'inin genişliği */
+  height: 32%;
+  position: absolute;
+  top: 215px;
+  right: 0;
+  background-color: #fff; /* İçerik arka plan rengi */
+  border: 1px solid #ccc; /* İçerik kenarlık */
+  border-radius: 20px;
+  padding: 5px; /* İçerik iç boşluğu */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* İçerik gölgelendirme */
+  z-index: 2;/* Diğer içeriklerin üstünde olacak şekilde z-index */
+}
+
+
+/* Kutuların border radius'u ve arka plan rengini ayarlayan stil */
+path {
+  transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+path:hover {
+  fill: #0031ae !important; /* Arka plan rengini #0031ae olarak ayarla */
+  stroke: #0031ae; /* Çerçeve rengini #0031ae olarak ayarla */
+  stroke-width: 3px; /* Çerçeve kalınlığını ayarla */
+  border-radius: 10px; /* Border radius ekle */
+}
+
+
+/* Diğer elemanların stilleri */
+.highlighted-section {
+  fill: #0031ae9d !important; /* Vurgulanan bölüm için arka plan rengi */
+  stroke: #0031ae85; /* Çerçeve rengi */
+  stroke-width: 3px; /* Çerçeve kalınlığı */
+}
+
+
+/* Görselleştirme alanı */
+#visualization {
+  width: 80%;
+  max-width: 1000px;
+  height: 600px;
+  margin-top: 20px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Görselleştirme içeriği merkezlenmiş durumda */
+#visualization > * {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#pdf-container {
+  display: none; /* Başlangıçta gizli */
+  position: absolute; /* Sabit konumda */
+  top: 215px; /* İstenilen yere göre ayarlayabilirsiniz */
+  left: 290px;
+  width: 55%; /* Başlangıçta istediğiniz genişlik */
+  max-width: 550px; /* Maksimum genişlik ayarı */
+  height: 60%; /* Tarayıcı penceresinin %60'ı kadar yükseklik */
+  max-height: 100%; /* Maksimum yükseklik ayarı */
+  border: 1px solid #ccc; /* Çerçeve */
+  background-color: #fff; /* Arkaplan rengi */
+  z-index: 2;  /* Gerekirse üstte olacak şekilde ayarlayabilirsiniz */
+  resize: both; /* Köşelerden tutularak boyutlandırma izni ver */
+  overflow: auto; /* İçeriği boyutlanabilir hale getir */
+  padding: 10px; /* İçerik ile çerçeve arasında boşluk bırak */
+  border-radius: 20px;
+}
+
+#pdf-container::-webkit-resizer {
+  width: 10px;
+  height: 100px;
+  background-color: #ccc;
+  border-radius: 20px;
+}
+
+#pdf-frame {
+  width: 100%; /* İçerik iframe'inin genişliği */
+  height: 100%; /* İçerik iframe'inin yüksekliği */
+  border: 1px solid #ccc; /* İçerik kenarlık */
+  border-radius: 20px;
+}
+
+
+
+#content-container {
+  display: block;
+  position: absolute;
+  width: 36%; /* İçerik iframe'inin genişliği */
+  height: 33%;
+  top: 215px;
+  right: 0;
+  background-color: #fff; /* İçerik arka plan rengi */
+  border: 1px solid #ccc; /* İçerik kenarlık */
+  border-radius: 20px;
+  padding: 5px; /* İçerik iç boşluğu */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* İçerik gölgelendirme */
+  z-index: 2; /* Diğer içeriklerin üstünde olacak şekilde z-index */
+  resize: vertical;
+}
+
+#conceptual-knowledge-container {
+  width: 100%;
+  height: 600px; /* You can adjust the height as needed */
+}
+
+.tooltip {
+  position: absolute;
+  text-align: center;
+  padding: 5px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 3px;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+
+#observablehq-chart-frame{
+  width: 100%; /* İçerik iframe'inin genişliği */
+  height: 99%;
+  position: absolute;
+  top: 0px;
+  right: 0;
+  background-color: #fff; /* İçerik arka plan rengi */
+  border: 1px solid #ccc; /* İçerik kenarlık */
+  border-radius: 20px;
+  padding: 5px; /* İçerik iç boşluğu */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* İçerik gölgelendirme */
+  z-index: 2;
+}
+
+/* Optional: Adjustments for the highlighted sections */
+.highlighted-section {
+  stroke: rgb(0, 67, 252); /* Border color */
+  stroke-width: 10px; /* Border width */
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background-color: rgba(128, 128, 128, 0.5);
+  color: white;
+  display: flex;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI";
+  z-index: 70;
+}
+
+.footer p {
+  margin: 0;
+}

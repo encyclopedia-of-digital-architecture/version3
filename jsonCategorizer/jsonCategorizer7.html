@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deep Hierarchical Keyword Classification</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .drop-area {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      background-color: #fafafa;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .drop-area:hover {
+      background-color: #f0f0f0;
+    }
+
+    .drop-area p {
+      margin: 0;
+    }
+
+    .statistics {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .loading {
+      text-align: center;
+      font-size: 18px;
+      color: #555;
+      display: none;
+    }
+
+    .toggle-btn {
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    /* Add custom styling for list and nested items */
+    .nested {
+      padding-left: 20px;
+      display: none;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .list-group-item {
+      cursor: pointer;
+    }
+
+    /* Add some color and padding to the list items */
+    .list-group-item:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Deep Hierarchical Keyword Classification</h1>
+    <div class="drop-area" id="dropArea">
+      <p>Drag and drop a .json file here or click to upload.</p>
+      <input type="file" id="fileInput" style="display: none;" />
+    </div>
+    <div id="loadingMessage" class="loading">Processing File...</div>
+    <div id="treeContainer"></div>
+    <div id="statisticsContainer" class="statistics"></div>
+  </div>
+
+  <!-- Bootstrap JS and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const treeContainer = document.getElementById('treeContainer');
+    const statisticsContainer = document.getElementById('statisticsContainer');
+    const loadingMessage = document.getElementById('loadingMessage');
+
+    dropArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropArea.style.backgroundColor = "#f0f0f0";
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+      dropArea.style.backgroundColor = "#fafafa";
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropArea.style.backgroundColor = "#fafafa";
+      handleFile(e.dataTransfer.files[0]);
+    });
+
+    dropArea.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+      if (!file || !file.name.endsWith('.json')) {
+        alert('Please upload a valid .json file.');
+        return;
+      }
+
+      loadingMessage.style.display = 'block';  // Show loading message
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          const processedData = processKeywords(data);
+          const tree = generateDeepHierarchy(processedData);
+          displayTree(tree);
+
+          // Display statistics
+          displayStatistics(processedData);
+        } catch (err) {
+          console.error('Error parsing JSON:', err);
+          alert('Error parsing the JSON file.');
+        } finally {
+          loadingMessage.style.display = 'none';  // Hide loading message
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Clean and split keywords (remove non-English and special characters)
+    function processKeywords(data) {
+      const cleanData = data.map((item) => {
+        return {
+          ...item,
+          Keywords: item.Keywords
+            .toLowerCase()
+            .split(', ')
+            .filter((word) => /^[a-zA-Z\s]+$/.test(word)) // Remove non-English or special chars
+        };
+      });
+
+      // Create clusters based on keywords
+      const clusters = createClusters(cleanData);
+      return clusters;
+    }
+
+    function createClusters(data) {
+      const clusters = {};
+      const maxClusters = 20; // Limit number of clusters
+
+      // Step 1: Calculate TF-IDF for each keyword
+      const tfidf = calculateTFIDF(data);
+
+      // Step 2: Create initial clusters based on word frequencies (simple clustering based on tf-idf score)
+      Object.entries(tfidf).forEach(([keyword, score]) => {
+        const clusterName = getClusterName(keyword);
+        if (!clusters[clusterName]) {
+          clusters[clusterName] = [];
+        }
+        clusters[clusterName].push(keyword);
+      });
+
+      // Step 3: Handle small clusters (less than 50 items) and move them to the "OTHERS" cluster or merge with larger clusters
+      Object.entries(clusters).forEach(([clusterName, keywords]) => {
+        if (keywords.length < 50) {
+          // Move to "OTHERS" or merge with the largest cluster
+          if (!clusters["OTHERS"]) clusters["OTHERS"] = [];
+          clusters["OTHERS"].push(...keywords);
+          delete clusters[clusterName]; // Remove small cluster
+        }
+      });
+
+      // Step 4: Further subdivide the clusters into subclusters
+      const subClusters = {};
+      Object.entries(clusters).forEach(([clusterName, keywords]) => {
+        subClusters[clusterName] = createSubClusters(keywords);
+      });
+
+      return subClusters;
+    }
+
+    function calculateTFIDF(data) {
+      const tf = {};
+      const idf = {};
+      const totalDocs = data.length;
+
+      // Step 1: Calculate term frequencies (TF)
+      data.forEach((item) => {
+        item.Keywords.forEach((keyword) => {
+          if (!tf[keyword]) {
+            tf[keyword] = 0;
+          }
+          tf[keyword]++;
+        });
+      });
+
+      // Step 2: Calculate inverse document frequency (IDF)
+      Object.keys(tf).forEach((word) => {
+        let docCount = 0;
+        data.forEach((item) => {
+          if (item.Keywords.includes(word)) {
+            docCount++;
+          }
+        });
+        idf[word] = Math.log(totalDocs / (docCount || 1));
+      });
+
+      // Step 3: Combine TF and IDF to get TF-IDF score
+      const tfidf = {};
+      Object.keys(tf).forEach((word) => {
+        tfidf[word] = tf[word] * idf[word];
+      });
+
+      return tfidf;
+    }
+
+    function getClusterName(keyword) {
+      return keyword.split(' ')[0].toUpperCase(); // Take the first word of the keyword as the cluster name (simple)
+    }
+
+    function createSubClusters(keywords) {
+      const subClusters = {};
+      keywords.forEach((keyword) => {
+        const subClusterName = getSubClusterName(keyword);
+        if (!subClusters[subClusterName]) {
+          subClusters[subClusterName] = [];
+        }
+        subClusters[subClusterName].push(keyword);
+      });
+
+      return subClusters;
+    }
+
+    function getSubClusterName(keyword) {
+      const parts = keyword.split(' ');
+      return parts[1] ? parts[1].toUpperCase() : parts[0].toUpperCase();
+    }
+
+    function generateDeepHierarchy(clusters) {
+      const root = document.createElement('ul');
+      root.classList.add('list-group');
+
+      Object.entries(clusters).forEach(([clusterName, subClusters]) => {
+        const clusterLi = document.createElement('li');
+        clusterLi.classList.add('list-group-item');
+        clusterLi.textContent = `${clusterName}`;
+        const toggleBtn = document.createElement('span');
+        toggleBtn.textContent = '[+]';
+        toggleBtn.classList.add('toggle-btn');
+        clusterLi.insertBefore(toggleBtn, clusterLi.firstChild);
+
+        const nestedUl = document.createElement('ul');
+        nestedUl.classList.add('nested', 'list-group');
+
+        Object.entries(subClusters).forEach(([subClusterName, keywords]) => {
+          const subClusterLi = document.createElement('li');
+          subClusterLi.classList.add('list-group-item');
+          subClusterLi.textContent = `${subClusterName}`;
+
+          const subToggleBtn = document.createElement('span');
+          subToggleBtn.textContent = '[+]';
+          subToggleBtn.classList.add('toggle-btn');
+          subClusterLi.insertBefore(subToggleBtn, subClusterLi.firstChild);
+
+          const subNestedUl = document.createElement('ul');
+          subNestedUl.classList.add('nested', 'list-group');
+
+          keywords.forEach((keyword) => {
+            const articleLi = document.createElement('li');
+            articleLi.classList.add('list-group-item');
+            articleLi.textContent = `Keyword: ${keyword}`;
+            subNestedUl.appendChild(articleLi);
+          });
+
+          subClusterLi.appendChild(subNestedUl);
+          nestedUl.appendChild(subClusterLi);
+        });
+
+        clusterLi.appendChild(nestedUl);
+        root.appendChild(clusterLi);
+
+        toggleBtn.addEventListener('click', () => {
+          nestedUl.classList.toggle('active');
+          toggleBtn.textContent = nestedUl.classList.contains('active') ? '[-]' : '[+]';
+        });
+      });
+
+      return root;
+    }
+
+    function displayTree(tree) {
+      treeContainer.innerHTML = '';
+      treeContainer.appendChild(tree);
+    }
+
+    function displayStatistics(data) {
+      let totalClusters = 0;
+      let totalSubclusters = 0;
+
+      // Calculate total clusters and subclusters
+      const clusterData = processKeywords(data);
+      totalClusters = Object.keys(clusterData).length;
+      totalSubclusters = Object.values(clusterData).reduce((acc, subClusters) => {
+        return acc + Object.keys(subClusters).length;
+      }, 0);
+
+      statisticsContainer.innerHTML = `
+        <p>Total Clusters: ${totalClusters}</p>
+        <p>Total Subclusters: ${totalSubclusters}</p>
+        <p>Total Keywords: ${data.length}</p>
+      `;
+    }
+  </script>
+</body>
+
+</html>

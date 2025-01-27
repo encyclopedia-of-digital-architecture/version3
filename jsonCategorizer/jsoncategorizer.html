@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article Categorization by Keywords</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #4589d1;
+    }
+
+    .instruction {
+      font-size: 1.1em;
+      margin: 20px 0;
+    }
+
+    .drop-area {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .drop-area:hover {
+      background-color: #e9e9e9;
+    }
+
+    .drop-area-text {
+      font-size: 1.1em;
+      color: #555;
+    }
+
+    /* Dropdown Menu Styling */
+    ul {
+      list-style-type: none;
+      padding-left: 20px;
+    }
+
+    li {
+      cursor: pointer;
+      margin: 8px 0;
+    }
+
+    .nested {
+      display: none;
+      padding-left: 20px;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .details {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .container {
+        margin: 10px;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>JSON Hierarchical Clustering</h1>
+
+    <!-- Drag and Drop Area for File Upload -->
+    <div class="instruction">
+      Drag and drop a .json file containing the article data.
+    </div>
+    <div class="drop-area" id="dropArea">
+      <span class="drop-area-text">Drag and drop a .json file here</span>
+    </div>
+
+    <div id="treeContainer" class="tree-container"></div>
+  </div>
+
+  <script>
+    // Drag-and-Drop functionality
+    const dropArea = document.getElementById('dropArea');
+
+    // Add event listeners for the drag-and-drop functionality
+    dropArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropArea.style.backgroundColor = "#e9e9e9";
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+      dropArea.style.backgroundColor = "#f9f9f9";
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropArea.style.backgroundColor = "#f9f9f9";
+      handleFile(e.dataTransfer.files[0]);
+    });
+
+    // Handle dropped file
+    function handleFile(file) {
+      if (!file || !file.name.endsWith('.json')) {
+        alert('Please drop a valid .json file.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = JSON.parse(e.target.result);
+        displayTree(data);
+      };
+      reader.readAsText(file);
+    }
+
+    // Display Tree function (same as before)
+    function displayTree(data) {
+      const categorizedData = categorizeByKeywords(data);
+      const treeContainer = document.getElementById('treeContainer');
+      treeContainer.innerHTML = ''; // Clear previous content
+      const tree = generateTree(categorizedData);
+      treeContainer.appendChild(tree);
+    }
+
+    // Categorize articles by keywords
+    function categorizeByKeywords(data) {
+      const categorized = {};
+      data.forEach(article => {
+        const keywords = article.Keywords.split(', ');
+        keywords.forEach(keyword => {
+          if (!categorized[keyword]) categorized[keyword] = [];
+          categorized[keyword].push(article);
+        });
+      });
+      return categorized;
+    }
+
+    // Generate tree structure for categories
+    function generateTree(categorizedData) {
+      const ul = document.createElement('ul');
+      Object.keys(categorizedData).forEach(keyword => {
+        const keywordLi = document.createElement('li');
+        keywordLi.textContent = keyword;
+
+        const nestedUl = document.createElement('ul');
+        nestedUl.classList.add('nested');
+        categorizedData[keyword].forEach(article => {
+          const articleLi = document.createElement('li');
+          articleLi.textContent = article.Title;
+
+          articleLi.addEventListener('click', function (event) {
+            event.stopPropagation();
+            showDetails(article);
+          });
+
+          nestedUl.appendChild(articleLi);
+        });
+
+        keywordLi.addEventListener('click', function () {
+          nestedUl.classList.toggle('active');
+        });
+
+        keywordLi.appendChild(nestedUl);
+        ul.appendChild(keywordLi);
+      });
+      return ul;
+    }
+
+    // Show details of a clicked article
+    function showDetails(article) {
+      const detailsDiv = document.querySelector('.details');
+      if (detailsDiv) detailsDiv.remove();
+
+      const details = document.createElement('div');
+      details.classList.add('details');
+      details.innerHTML = `
+        <strong>Title:</strong> ${article.Title}<br>
+        <strong>Author(s):</strong> ${article['Author(s)']}<br>
+        <strong>Year:</strong> ${article.Year}<br>
+        <strong>Keywords:</strong> ${article.Keywords}<br>
+        <strong>Summary:</strong> ${article.Summary}
+      `;
+      document.querySelector('.container').appendChild(details);
+    }
+
+    function categorizeByKeywords(data) {
+  if (!Array.isArray(data)) {
+    alert(
+      'Uploaded JSON file is not in the correct format. Please provide an array of articles. Example Format:\n\n' +
+      '[\n' +
+      '  {\n' +
+      '    "Author(s)": "Jane Doe",\n' +
+      '    "Year": "2022",\n' +
+      '    "Title": "Machine Learning in Architecture",\n' +
+      '    "Keywords": "MACHINE LEARNING, AI, DESIGN, ARCHITECTURE",\n' +
+      '    "Summary": "This article explores the integration of machine learning in architectural design, highlighting key applications and future directions."\n' +
+      '  }\n' +
+      ']'
+    );
+    return {};
+  }
+
+  const categorized = {};
+  data.forEach(article => {
+    const keywords = article.Keywords.split(', ');
+    keywords.forEach(keyword => {
+      if (!categorized[keyword]) categorized[keyword] = [];
+      categorized[keyword].push(article);
+    });
+  });
+  return categorized;
+}
+
+  </script>
+</body>
+
+</html>
