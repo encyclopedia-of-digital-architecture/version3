@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Encyclopedia of Digital Architecture</title>
+  <link rel="stylesheet" href="css/styles2.css">
+  <link rel="icon" type="image/x-icon" href="images/logo.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
+  <!-- ObservableHQ Inspector stil dosyası -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+  <div class="outer-container-1" id="outerContainer">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-start">
+
+      <div class="header">
+        <div id="logo-box">
+          <a href="index.html">
+            <img src="images/logo.png" alt="Logo">
+          </a>
+        </div>
+        <a href="https://forms.gle/8pcg6xDZQ1Txvz7J7" target="_blank" id="questionnaire-btn" class="btn btn-primary">Questionnaire</a>
+
+        <div class="title">
+          <h1 class="display-4">ENCYCLOPEDIA OF DIGITAL ARCHITECTURE</h1>
+          <p class="lead">A Visual Exploration of Scientific Concepts on Digital Architecture in an Online Encyclopedia
+          </p>
+        </div>
+
+        <!-- Yeni Navbar Linkleri -->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">
+              <i class="fas fa-home"></i> Homepage
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="guideline.html">
+              <i class="fas fa-info-circle"></i> About
+            </a>
+          </li>          
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">
+              <i class="fas fa-envelope"></i> Contact
+            </a>
+          </li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-book-open"></i> Co-Learning
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Collaborative Workspace</a>
+              <a class="dropdown-item" href="#">Online Workshops</a>
+              <a class="dropdown-item" href="#">Learning Communities</a>
+              <a class="dropdown-item" href="#">Virtual Studio</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#" id="open-chat-btn">Chat with AI</a>
+              <a class="dropdown-item" href="#" id="toggle-comments">Add Comments</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#profile">
+              <i class="fas fa-user"></i> Profile
+            </a>
+          </li>
+        </ul>
+        <div class="search-container d-flex align-items-center ml-3">
+          <input type="text" id="searchBar" placeholder="Search...">
+          <button id="searchButton"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div id="grid-container">
+    <div class="rectangle-pleaseSelect">
+      <div class="diagram">PLEASE SELECT A DIAGRAM</div>
+    </div>
+  </div>
+
+
+  <div class="overflow">
+    <div class="overflow-inner1">
+      1. Group of Diagrams
+      <button class="overflow-inner1a" id="toggleButton-1a" onclick="toggleZoomableSunburst()">
+        <img src="images/img1_zoomableSunburst.png" alt="zoomableSunburst">
+        Zoomable Sunburst
+      </button>
+
+      <button class="overflow-inner1a2" id="toggleButton-1a2" onclick="togglePrototype()">
+        <img src="images/prototip.png" alt="zoomableSunburstPrototype">
+        Zoomable Sunburst Prototype
+      </button>
+
+      <button class="overflow-inner1b" id="toggleButton-1b" onclick="toggleZoomableCirclePacking()">
+        <img src="images/img1_zoomableCirclePacking.png" alt="zoomableCirclePacking">
+        Zoomable Circle Packing
+      </button>
+
+      <button class="overflow-inner1c" id="toggleButton-1c" onclick="toggleSequencesSunburst()">
+        <img src="images/img1_sequencesSunburst.png" alt="sequencesSunburst">
+        Sequences Sunburst
+      </button>
+
+    </div>
+
+    <div class="overflow-inner2">
+      2. Group of Diagrams
+      <div class="overflow-inner2a" onclick="toggleChart()">
+        <img src="images/img1_hierarchicalEdgeBundlingBlue.png" alt="hierarchicalEdgeBundling">
+        Hierarchical Edge Bundling
+      </div>
+      <div class="overflow-inner2b" onclick="toggleExplodedChart()">
+        <img src="images/img1_radialClusterTree.png" alt="radialClusterTreed">
+        Radial Tree
+      </div>
+      <div class="overflow-inner2c">
+        <img src="images/img1_treeofLife.png" alt="treeofLife">
+        Tree of Life
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+  <script>
+    function togglePrototype() {
+      console.log("Zoomable Sunburst Prototype fonksiyonu tetiklendi!"); // Test mesajı
+  
+      const container = document.getElementById('prototypeIframeContainer');
+  
+      // Prototype iframe container'ını göster
+      if (container.style.display === 'none' || container.style.display === '') {
+          container.style.display = 'block';  // Iframe'i göster
+          loadPrototypeIframe();  // Iframe yükle (isteğe bağlı, iframe yükleme fonksiyonu)
+      } else {
+          container.style.display = 'none';  // Gizle
+      }
+  
+      // Diğer iframe'leri gizle
+      hideAllIframes();
+  }
+  
+  // Diğer iframe'leri gizleyen fonksiyon
+  function hideAllIframes() {
+      const iframes = document.querySelectorAll('.iframe-container');
+      iframes.forEach(iframe => iframe.style.display = 'none');
+  }
+  
+  function loadPrototypeIframe() {
+      console.log("Prototype Iframe yükleniyor...");
+      // Burada iframe içeriğini yüklemek için gerekli işlemleri yapabilirsiniz
+  }
+  
+  </script>
+
+  <div class="iframe-container-wrapper">
+    <div class="iframe-container">
+      <iframe src="ris-to-json.html" title="RIS to JSON"></iframe>
+    </div>
+    <div class="iframe-container">
+      <iframe src="jsonCategorizer/jsonCategorizer8.html" title="JSON Categorizer"></iframe>
+    </div>
+  </div>
+    <!-- Iframe için container (unique ID) -->
+    <div id="prototypeIframeContainer" style="display: none; width: 100%; height: 1000px;">
+      <iframe id="prototypeIframe" src="prototype/prototype.html" width="100%" height="300%"></iframe>
+  </div>
+</div>
+  
+  <svg id="chart-svg" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(10, 10)">
+      <!-- Çizimler veya diğer SVG elemanları buraya gelecek -->
+    </g>
+  </svg>
+
+  <div id="zoomableSunburstContainer" style="display: none;"  z-index: 9999;>
+    <!-- Zoomable Sunburst Chart -->
+  </div>
+  
+
+  <div id="zoomableCirclePackingContainer" style="display: none;">
+    <!-- Zoomable Circle Packing Chart -->
+  </div>
+  <div id="sequencesSunburstContainer" style="display: none;">
+    <!-- Zoomable Sunburst Sequences Chart -->
+  </div>
+
+
+  <div id="content-container" style="display:none;"></div>
+
+
+  <div id="iframe-container" class="d-none">
+    <iframe id="observablehq-chart-frame" frameborder="0" width="100%" height="600"></iframe>
+  </div>
+
+
+  <footer class="footer">
+    <p>© 2025 Encyclopedia of Digital Architecture. All rights reserved.</p>
+  </footer>
+
+
+  <script>  document.addEventListener("DOMContentLoaded", function () {
+    // Check if the current page is "guideline.html"
+    if (window.location.pathname.includes("guideline.html")) {
+      // Show the 'otherContent' only on the Guideline page
+      document.getElementById("otherContent").style.display = "block";
+    } else {
+      // Hide it on the homepage or any other page
+      document.getElementById("otherContent").style.display = "none";
+    }
+  });
+   </script>
+  
+
+  <!-- JS Dosyalarını en son yükleyin -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.0.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/ml5@2.3.0/dist/ml5.min.js"></script>
+  <script src="https://unpkg.com/gojs/release/go.js"></script>
+  <script src="js/index.js"></script>
+  <script src="js/questionnaire.js"></script>
+  <script src="js/zoomableSunburst.js"></script>
+  <script src="js/conceptualKnowledge.js"></script>
+  <script src="js/zoomableCirclePacking.js"></script>
+  <script src="js/observablehqIntegration.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/searchbutton.js"></script>
+  <script src="js/colearning.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.11.0/system.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/json5/2.2.1/json5.min.js"></script>
+
+  <script src="js/deneme.js"></script>
+</body>
+
+</html>

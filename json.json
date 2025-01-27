@@ -1,0 +1,88 @@
+{
+    "name": "DIGITAL ARCHITECTURE",
+    "children": [
+      {
+        "name": "DIGITAL FABRICATION",
+        "children": [
+          {
+            "name": "DIGITAL FABRICATION",
+            "children": [
+              {
+                "name": "Making Digital Architecture: Historical, Formal, and Structural Implications of Computer Controlled Fabrication and Expressive Form",
+                "value": 1000,
+                "keywords": "EXPRESSIVE FORM, DIGITAL VISUALIZATION, DIGITAL FABRICATION, RAPID PROTOTYPING, FIVE-AXIS MILLING",
+                "summary": "Digital output from computer modeling represents a significant new method for visualization and fabrication of architecture. The ability to move directly from three-dimensional modeling to real three-dimensional output challenges the need for traditional means of representation such as plan, section, etc. Moreover, the necessity for conversion of architectural intentions into a code (construction documents, shop drawings, etc.) to be translated by the contractor will also be tested with these new potentials in fabrication. This subjugation of traditional forms of representation and fabrication has serious implications for architectural design process and production. The intention of this paper is to scrutinize underlying issues inherent in a design process of developing architectural solutions using the computer both as a tool for three-dimensional visualization as well as for guiding three-dimensional fabrication. Precedent of historic expressive architectural form (seen through the lens of fabrication) will be presented to lay the foundation for the examination of new fabrication techniques and structural concerns for computer generated expressive forms. A series of rapid prototype studies from a digital architecture seminar will also be analyzed to outline the need for developing visualization/fabrication process ideas and research into methods for making digital architecture.",
+                "children": [
+                  {
+                    "name": "Conceptual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Procedural Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Visual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Configurational Knowledge",
+                    "value": 150
+                  }
+                ]
+              },
+              {
+                "name": "Digital Fabrication: Manufacturing Architecture in the Information Age",
+                "value": 1000,
+                "keywords": "DIGITAL FABRICATION, COMPUTER-AIDED MANUFACTURING, DIGITAL CONSTRUCTION",
+                "summary": "This paper addresses the recent digital technological advances in design and fabrication and the unprecedented opportunities they created for architectural design and production practices. It investigates the implications of new digital design and fabrication processes enabled by the use of rapid prototyping (RP) and computer-aided manufacturing (CAM) technologies, which offer the production of small-scale models and full-scale building components directly from 3D digital models. It also addresses the development of repetitive non-standardized building systems through digitally controlled variation and serial differentiation, i.e. mass-customization, in contrast to the industrial-age paradigms of prefabrication and mass production. The paper also examines the implications of the recent developments in the architectural application of the latest digital design and fabrication technologies, which offer alternatives to the established understandings of architectural design and production processes and their material and economic constraints. Such critical examination should lead to a revised understanding of the historic relationship between architecture and its means of production.",
+                "children": [
+                  {
+                    "name": "Conceptual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Procedural Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Visual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Configurational Knowledge",
+                    "value": 150
+                  }
+                ]
+              },
+              {
+                "name": "Teaching Digital Fabrication through Design",
+                "value": 1000,
+                "keywords": "DIGITAL FABRICATION, DESIGN RESEARCH, CRAFT",
+                "summary": "This paper explains the development of a digital fabrication graduate seminar that has evolved over four semesters. The class attempts to teach at various levels between ‘how to’ considerations of learning hardware and software, while exploring a deeper understanding of the technological implications on design and digital fabrication. At the heart of the course is the belief that the limitations of hardware, software, and materials can be viewed as opportunities during the making of any artifact. A number of teaching models have been employed over the four semesters that include short, abstract, directed mini-projects, which teach one skill to the opposite extreme that develops longer, open-ended research / design projects focused on a technology or technique. The products of the class are used to compare the benefits and deficiencies of various pedagogies. The work is also used to further define the desires of the course related to strategies for materials and making.",
+                "children": [
+                  {
+                    "name": "Conceptual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Procedural Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Visual Knowledge",
+                    "value": 150
+                  },
+                  {
+                    "name": "Configurational Knowledge",
+                    "value": 150
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
